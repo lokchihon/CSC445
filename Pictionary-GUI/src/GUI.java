@@ -34,8 +34,9 @@ public class GUI implements Runnable{
     private JPanel pointsPanel;
     private JLabel pointsLabel;
     private long timeGuessed = Long.MAX_VALUE;
-    
-    protected String username;
+    private String username;
+    private boolean playing = false;
+    private JButton startButton;
     
     protected static final int RED = 0;
     protected static final int ORANGE = 1;
@@ -46,6 +47,21 @@ public class GUI implements Runnable{
     protected static final int BLACK = 6;
     protected static final int ERASE = 7;
 
+    /**
+     * Classic constructor.
+     * @param u the username
+     * @param tooltips determines whether or not the color tooltips will be displayed
+     */
+    public GUI(String user, boolean tooltips, boolean painter) {
+    	username = user;
+    	isPainter = painter;
+    	word = new JLabel(theWord);
+    	this.run();
+    	triggerColorLabels(tooltips);
+    }
+    
+    //TODO throw in a start button for the painter
+    
     /**
      * This method runs the game panel. 
      */
@@ -62,7 +78,7 @@ public class GUI implements Runnable{
         color = Color.BLACK;
         
         //This method makes the canvas. In theory, it also can clear it.
-		canvas = new JPanel(){
+		canvas = new JPanel(new GridBagLayout()){
 
 			/**
 			 * Java wanted this I guess
@@ -84,6 +100,17 @@ public class GUI implements Runnable{
         canvas.setSize(1165, 850);
         canvas.setBackground(Color.WHITE);
         
+        startButton = new JButton("START!");
+        startButton.addActionListener(actionEvent -> {
+        	startButton.setVisible(false);
+        	playing = true;
+        });
+        startButton.setVisible(false);
+        startButton.setPreferredSize(new Dimension(100,100));
+        GridBagConstraints startConstraint = new GridBagConstraints();
+        startConstraint.ipady = 300;
+        canvas.add(startButton);
+        
         //This is the section that listens to the mouse actions while moving. 
         canvas.addMouseMotionListener(new MouseMotionListener() {
             //This listener is for when the mouse is clicked and moving. 
@@ -94,7 +121,7 @@ public class GUI implements Runnable{
                 pPosY = posY;
                 posX = mouseEvent.getX();
                 posY = mouseEvent.getY();
-                if(isPainter) canvas.paintComponents(canvas.getGraphics());
+                if(isPainter&&playing) canvas.paintComponents(canvas.getGraphics());
             }
 
             //This listener is for when the mouse is moving while not clicked.
@@ -114,7 +141,7 @@ public class GUI implements Runnable{
 			public void mouseClicked(MouseEvent arg0) {
                 pPosX = posX;
                 pPosY = posY;
-                if(isPainter) canvas.paintComponents(canvas.getGraphics());
+                if(isPainter&&playing) canvas.paintComponents(canvas.getGraphics());
 			}
 
 			@Override
@@ -306,7 +333,6 @@ public class GUI implements Runnable{
         wordsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         wordsPanel.setBackground(Color.LIGHT_GRAY);
         JLabel padding = new JLabel("    ");
-        giveWord(isPainter, theWord);
         /*
         if(isPainter) word = new JLabel(theWord);
         else {
@@ -318,7 +344,6 @@ public class GUI implements Runnable{
         }
         */
         
-        word.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
         wordsPanel.add(padding);
         wordsPanel.add(word);
         wordsPanel.setPreferredSize(new Dimension(500, 60));
@@ -402,8 +427,9 @@ public class GUI implements Runnable{
 	private void setIsDrawer(boolean canSee) {
 		
 		isPainter = canSee;
+		startButton.setVisible(isPainter);
 		for(JComponent c : buttonPanelArray) {
-			c.setVisible(canSee);
+			c.setVisible(isPainter);
 		}
 		
 	}
@@ -428,12 +454,13 @@ public class GUI implements Runnable{
 	}
 	
 	/**
-	 * Clears the canvas.
+	 * Clears the canvas and the paint queue.
 	 */
 	public void clearCanvas() {
 		Graphics g = canvas.getGraphics();
 		g.setColor(canvas.getBackground());
 		g.fillRect(0, 0, 1165, 850);
+		paintQueue = new ArrayList<>();
 	}
 	
 	/**
@@ -452,6 +479,7 @@ public class GUI implements Runnable{
 			chatText = firstHalf+"****"+lastHalf;
 		}
 		*/
+		if(uName.equals(username)) chatQueue.add(chatText);
 		boolean retVal = false;
 		
 		if(!chatText.toLowerCase().contains(theWord.toLowerCase())) chatLog.add(uName+": "+chatText);
@@ -524,6 +552,8 @@ public class GUI implements Runnable{
 	public void giveWord(boolean painter, String theSuperSecretAwesomeKeyword) {
 		
 		setIsDrawer(painter);
+		playing = false;
+		clearCanvas();
 		theWord = theSuperSecretAwesomeKeyword;
 		if(word==null) {
 			if(isPainter) word = new JLabel(theWord);
@@ -544,7 +574,8 @@ public class GUI implements Runnable{
 	        	}
 	        	word.setText(blanks);
 	        }
-		}
+		}        
+		word.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
 		wordsPanel.validate();
 		wordsPanel.repaint();
 		
@@ -557,6 +588,7 @@ public class GUI implements Runnable{
 	public void updateTimer(int secondsRemaining) {
 		
 		secondsLeft = secondsRemaining;
+		if(secondsLeft==0) stopGame();
 		int timeSec = secondsLeft%60;
 		int timeMin = secondsLeft/60;
 		if(timeLabel==null) timeLabel = new JLabel(timeMin+":0"+timeSec);
@@ -583,6 +615,31 @@ public class GUI implements Runnable{
 	 */
 	public long getTimeGuessed() {
 		return timeGuessed;
+	}
+	
+	/**
+	 * It's exactly what you think it is.
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+	
+	/**
+	 * Another hard one.
+	 * @return the game state
+	 */
+	public boolean getPlaying() {
+		return playing;
+	}
+	
+	/**
+	 * I made this public because maybe the controller need to stop the game at some point, but it 
+	 * gets called here too when the time is 0.
+	 */
+	public void stopGame() {
+		playing = false;
+		//TODO make popup window
 	}
 	
 }
