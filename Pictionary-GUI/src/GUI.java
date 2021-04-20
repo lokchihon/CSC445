@@ -15,11 +15,11 @@ public class GUI implements Runnable{
     private int brushSize = 10;
     private int posX, pPosX;
     private int posY, pPosY;
-    private int chatQueueIndex = 0;
     private JComponent[] buttonPanelArray = new JComponent[11];
     private JList<Object> chatList = new JList<>();
     private ArrayList<String> chatLog = new ArrayList<>();
-    private ArrayList<DrawData> paintLog = new ArrayList<>();
+    private ArrayList<String> chatQueue = new ArrayList<>();
+    private ArrayList<DrawData> paintQueue = new ArrayList<>();
     private JPanel canvas;
     private JFrame paintingWindow;
     private JScrollPane chatScrollPane;
@@ -75,7 +75,7 @@ public class GUI implements Runnable{
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setStroke(new BasicStroke(brushSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                 DrawData d = new DrawData(new int[]{pPosX, pPosY, posX, posY}, brushSize, colorCode);
-                paintLog.add(d);
+                paintQueue.add(d);
                 g2.drawLine(posX, posY, pPosX, pPosY);
             }
 			
@@ -461,10 +461,7 @@ public class GUI implements Runnable{
 			chatLog.add(uName+" guessed the word!");
 			retVal =  true;
 		}
-		if(chatLog.size()>512) {
-			chatLog.remove(0);
-			if(chatQueueIndex > 0) chatQueueIndex--;
-		}
+		if(chatLog.size()>512) chatLog.remove(0);
 		Object[] chats = chatLog.toArray();
 		chatList.setListData(chats);
 		chatScrollPane.validate();
@@ -478,7 +475,7 @@ public class GUI implements Runnable{
 	 * @return the oldest chat message
 	 */
 	public String getChat() {
-		if(chatQueueIndex < chatLog.size()) return chatLog.get(chatQueueIndex++);
+		if(chatQueue.size() > 0) return chatQueue.remove(0);
 		else return "";
 	}
 	
@@ -515,7 +512,7 @@ public class GUI implements Runnable{
 	 * @return the DrawData object if there is one, else null
 	 */
 	public DrawData getBrushStrokes() {
-		if(paintLog.size() > 0) return paintLog.remove(0);
+		if(paintQueue.size() > 0) return paintQueue.remove(0);
 		else return null;
 	}
 	
