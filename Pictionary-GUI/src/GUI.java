@@ -4,11 +4,13 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class GUI implements Runnable{
+public class GUI implements Runnable, WindowListener{
 
     private Color color;
     private int colorCode;
@@ -38,6 +40,8 @@ public class GUI implements Runnable{
     private boolean playing = false;
     private JButton startButton;
     
+    protected boolean alive = true;
+    
     protected static final int RED = 0;
     protected static final int ORANGE = 1;
     protected static final int YELLOW = 2;
@@ -62,8 +66,6 @@ public class GUI implements Runnable{
     	giveWord(isPainter, theWord);
     }
     
-    //TODO throw in a start button for the painter
-    
     /**
      * This method runs the game panel. 
      */
@@ -77,15 +79,18 @@ public class GUI implements Runnable{
         paintingWindow.setLayout(new BorderLayout());
         //I did this because we need to be able to refer to the same points across each client. Same window = same co-ords
         paintingWindow.setResizable(false);
+        paintingWindow.addWindowListener(new GUIWindowListener(this));
+        
         color = Color.BLACK;
         
         //This method makes the canvas. In theory, it also can clear it.
 		canvas = new JPanel(new GridBagLayout()){
 
+
 			/**
-			 * Java wanted this I guess
+			 * Java wanted this
 			 */
-			private static final long serialVersionUID = 1L;
+			private static final long serialVersionUID = -7275070503796240933L;
 
 			@Override
             public void paintComponents(Graphics g){
@@ -118,7 +123,6 @@ public class GUI implements Runnable{
             //This listener is for when the mouse is clicked and moving. 
             @Override
             public void mouseDragged(MouseEvent mouseEvent) {
-                System.out.println("DRAGGING "+mouseEvent.getX()+":"+mouseEvent.getY());
                 pPosX = posX;
                 pPosY = posY;
                 posX = mouseEvent.getX();
@@ -459,8 +463,12 @@ public class GUI implements Runnable{
 	 */
 	public void clearCanvas() {
 		Graphics g = canvas.getGraphics();
-		g.setColor(canvas.getBackground());
-		g.fillRect(0, 0, 1165, 850);
+		try {
+			g.setColor(canvas.getBackground());
+			g.fillRect(0, 0, 1165, 850);
+		} catch(NullPointerException e) {
+			e.printStackTrace();
+		}
 		paintQueue = new ArrayList<>();
 	}
 	
@@ -486,7 +494,6 @@ public class GUI implements Runnable{
 		if(!chatText.toLowerCase().contains(theWord.toLowerCase())) chatLog.add(uName+": "+chatText);
 		else {
 			if(uName.equals(username)) timeGuessed = System.currentTimeMillis();
-			System.out.println(uName+" guessed the word!");
 			chatLog.add(uName+" guessed the word!");
 			retVal =  true;
 		}
@@ -554,7 +561,11 @@ public class GUI implements Runnable{
 		
 		setIsDrawer(painter);
 		playing = false;
-		clearCanvas();
+		try{
+			clearCanvas();
+		} catch(NullPointerException e) {
+			e.printStackTrace();
+		}
 		theWord = theSuperSecretAwesomeKeyword;
 		if(word==null) {
 			if(isPainter) word = new JLabel(theWord);
@@ -636,11 +647,54 @@ public class GUI implements Runnable{
 	
 	/**
 	 * I made this public because maybe the controller need to stop the game at some point, but it 
-	 * gets called here too when the time is 0.
+	 * gets called in here too when the time is 0.
 	 */
 	public void stopGame() {
 		playing = false;
-		//TODO make popup window
+		//TODO This is where a popup window could be used. Alternatively, I could just send a chat.
+	}
+	
+	/**
+	 * Tells you if the window is still in existence.
+	 * @return
+	 */
+	public boolean isAlive() {
+		return alive;
+	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		alive = false;
+		System.out.println("Closed");
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		alive = false;
+		System.out.println("Closing");
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		alive = false;
+		System.out.println("Deactivated");
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		alive = false;
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
 	}
 	
 }

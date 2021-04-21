@@ -12,19 +12,22 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-public class GUIMainMenu implements Runnable{
+public class GUIMainMenu extends JFrame {
 	
+	/**
+	 * Java wanted this.
+	 */
+	private static final long serialVersionUID = -6150947612286163108L;
 	private GUI g;
 	//This could also be a URL, but I think a 'game name' will be less intimidating for users
-	protected String gameName;
-	protected String uName;
-	protected boolean validSettings = false;
-	protected boolean host = false;
+	protected String gameName = "";
+	protected String uName = "";
 	protected String word = "MISSING WORD";
-
-	@Override
-	public void run() {
-		
+	protected boolean host = false;
+	
+	private JPanel mainMenu;
+	
+	public GUIMainMenu() {
 		//TODO make pretty lines draw across the screen outside the button area, or something
 		
 		JFrame menuFrame = new JFrame("Not Pictionary (for legal reasons) Pictionary");
@@ -34,7 +37,7 @@ public class GUIMainMenu implements Runnable{
 		menuFrame.setVisible(true);
 		
 		//This is where all the action happens.
-		JPanel mainMenu = new JPanel(new GridBagLayout());
+		mainMenu = new JPanel(new GridBagLayout());
 		final JButton beginGame = new JButton("Host New Game");
 		final JButton joinAGame = new JButton("Join Existing Game");
 		final String select = "(choose a username)";
@@ -76,29 +79,16 @@ public class GUIMainMenu implements Runnable{
 		
 		startButton.addActionListener(actionEvent -> {
 			uName = uNameField.getText();
+			gameName = urlField.getText();
 			if(uName.equals(select) || uName.equals("")) uName = "noname"+((int)(Math.random()*1000));
-			if(!urlField.getText().equals("(enter game name)")) {
+			if(!urlField.getText().equals("(enter game name)") && !urlField.getText().equals("")) {
 				gameName = urlField.getText();
-				int count = 0;
-				while(!host && !validSettings && count < 2500) {
-					count++;
-					try {
-						Thread.sleep(1);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-				if(count < 1000) g = new GUI(uName, true, host, word);
-				else {
-					if(!host) JOptionPane.showMessageDialog(mainMenu, "Could not locate game.");
-					else JOptionPane.showMessageDialog(mainMenu, "Failed to create game.");
-				}
 			}
 			else {
 				JOptionPane.showMessageDialog(mainMenu, "You must enter a game name to start.");
 			}
 		});
-		startButton.setPreferredSize(new Dimension(140, 45));
+		startButton.setPreferredSize(new Dimension(145, 45));
 		GridBagConstraints startConst = new GridBagConstraints();
 		startConst.gridx = 1;
 		startConst.gridy = 3;
@@ -113,7 +103,7 @@ public class GUIMainMenu implements Runnable{
 			beginGame.setVisible(true);
 			prevButton.setVisible(false);
 		});
-		prevButton.setPreferredSize(new Dimension(140, 45));
+		prevButton.setPreferredSize(new Dimension(145, 45));
 		GridBagConstraints prevConst = new GridBagConstraints();
 		prevConst.gridx = 0;
 		prevConst.gridy = 3;
@@ -206,28 +196,54 @@ public class GUIMainMenu implements Runnable{
 	}
 	
 	/**
-	 * This method tells the game if it is good to go or not, and gives the controller one last chance
-	 * to overwrite the username or the game name.
-	 * @param g2g the boolean value that tells the GUI if it can run
-	 * @param username the username the GUI will use
-	 * @param game the game name
-	 * @param gameWord the word the game begins with
+	 * 
+	 * @return
 	 */
-	public void validateSettings(boolean g2g, String username, String game, String gameWord) {
-		if(g2g) {
-			uName = username;
-			gameName = game;
-			word = gameWord;
-			validSettings = true;
-		}
+	public GUI makeGUI(String username, String word, boolean hosting) {
+		g = null;
+		g = new GUI(username, true, hosting, word);
+		gameName = "";
+		return g;
 	}
 	
 	/**
-	 * This method returns the GUI.
+	 * 
+	 * @return
+	 */
+	public boolean hasGUI() {
+		return g == null;
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	public GUI getGUI() {
 		return g;
+	}
+	
+	/**
+	 * Used to alert the player that the game name was not valid.
+	 */
+	public void couldNotFindGame() {
+		JOptionPane.showMessageDialog(mainMenu, "Could not find game.");
+		gameName = "";
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean hasGame() {
+		return !gameName.equals("") && !gameName.equals("(enter game name)");
+	}
+	
+	/**
+	 * Removes the game.
+	 */
+	public void removeGame() {
+		gameName = "";
+		g = null;
 	}
 
 }
