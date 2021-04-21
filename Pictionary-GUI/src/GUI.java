@@ -52,12 +52,14 @@ public class GUI implements Runnable{
      * @param u the username
      * @param tooltips determines whether or not the color tooltips will be displayed
      */
-    public GUI(String user, boolean tooltips, boolean painter) {
+    public GUI(String user, boolean tooltips, boolean painter, String wordString) {
     	username = user;
     	isPainter = painter;
+    	theWord = wordString;
     	word = new JLabel(theWord);
     	this.run();
     	triggerColorLabels(tooltips);
+    	giveWord(isPainter, theWord);
     }
     
     //TODO throw in a start button for the painter
@@ -355,12 +357,11 @@ public class GUI implements Runnable{
         timerPanel.setPreferredSize(new Dimension(100, 60));
         timerPanel.add(timeLabel);
         
-        pointsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        padding = new JLabel("                                ");
+        pointsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         pointsLabel = new JLabel("Points: "+points);
         pointsLabel.setFont(new Font("Comis Sans MS", Font.PLAIN, 30));
         pointsPanel.setBackground(Color.LIGHT_GRAY);
-        pointsPanel.setPreferredSize(new Dimension(350, 60));
+        pointsPanel.setPreferredSize(new Dimension(540, 60));
         pointsPanel.add(padding);
         pointsPanel.add(pointsLabel);
 
@@ -412,7 +413,7 @@ public class GUI implements Runnable{
         paintingWindow.add(chatPanel, BorderLayout.EAST);
         paintingWindow.add(westBumperPanel, BorderLayout.WEST);
         paintingWindow.add(canvas, BorderLayout.CENTER);
-        paintingWindow.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        paintingWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         paintingWindow.setSize(canvas.getSize());
         paintingWindow.repaint();
         paintingWindow.setVisible(true);
