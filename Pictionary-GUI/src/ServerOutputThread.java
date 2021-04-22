@@ -23,15 +23,15 @@ public class ServerOutputThread extends Thread {
         try {
             while (server.getServerRunning()) {
                 try {
-                    TimeUnit.MILLISECONDS.sleep(100);
-                } catch (InterruptedException e) {e.printStackTrace();}
-                try {
                     //data packet
+                    TimeUnit.MILLISECONDS.sleep(100);
                     DataPacket data = server.getData(client);
                     out.writeObject(data);
                     out.flush();
                     out.reset();
-                }catch (ConcurrentModificationException ignore){}
+                }catch (ConcurrentModificationException ignore){} catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
         catch (IOException e) {e.printStackTrace();}

@@ -104,26 +104,23 @@ public class Server {
         timer.cancel();
         timer = new Timer();
 
-        calculatePoints();
-        //!!!!! send everyone a message about the points
-
         //remove artist role
         for(Client c : clients){
             c.setDrawer(false);
         }
+
+        //!!!!!!!!!!send message saying round has ended
+        sendToAll("END");
 
         //!!!!! enter waiting room
         gameStatus = "WAITING";
     }
 
     public synchronized void playerConnected(Client client){
-        if(validUsername(client.username)){
+        if(validUsername(client.getUsername())){
             clients.add(client);
             //!!!!!send a message welcoming the new person
-            for(Client c : clients){
-                c.addMessage(client.username + "has joined the game!");
-                //!!!!!send everyone a message that this new person has joined
-            }
+            sendToAll(client.getUsername() + " has joined the game!");
         }
         client.addMessage("Username was taken, try another one.");
         //!!!!!else send message saying username is taken and to choose another one
@@ -131,16 +128,14 @@ public class Server {
     }
 
     public synchronized void playerDisconnected(Client client) throws IOException {
-        clients.remove(client.username);
+        clients.remove(client.getUsername());
         if(clients.size() < 2) {
             endRound();
         } else if(client.getDrawer()){
             endRound();
         }
         //!!!!!send everyone a message that this person has left the game
-        for(Client c : clients){
-            c.addMessage(client.username + "has left the game.");
-        }
+        sendToAll(client.getUsername() + " has left the game.");
 
     }
 
@@ -161,7 +156,10 @@ public class Server {
         } else if (message.equals("START") && clients.get(0)==sender){
             newRound();
         } else if(message.toLowerCase().equals(secretWord.toLowerCase())){
-            messageToSendOut = sender.getUsername() + "has guessed the secret word!";
+            messageToSendOut = sender.getUsername() + " has guessed the secret word!";
+            //!!!!!!!!!!!!!need to calculate points based on countdown clock
+            calculatePoints(sender);
+            winners++;
             if(winners == clients.size()-1){
                 end = true;
             }
@@ -203,15 +201,19 @@ public class Server {
     }
 
     public synchronized DataPacket getData(Client client){
-        return new DataPacket(drawData,timeRemaining, client.messages);
+        return new DataPacket(drawData,
+                timeRemaining,
+                client.getMessages(),
+                client.getPoints());
     }
 
     public boolean getServerRunning(){
         return this.serverRunning;
     }
 
-    public void calculatePoints(){
-
+    public void calculatePoints(Client sender){
+        int points = sender.getPoints();
+        sender.setPoints(points+timeRemaining);
     }
 
     public Client chooseDrawer(){

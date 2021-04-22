@@ -30,9 +30,9 @@ class ListenForClients extends Thread{
                 new ServerInputThread(server, player, socket).start();
                 numberOfClients ++;
 
-                if(gameStart){
-                    listening = false;
-                }
+//                if(gameStart){
+//                    listening = false;
+//                }
             }
         } catch (IOException e) {
             System.err.println("Port error");

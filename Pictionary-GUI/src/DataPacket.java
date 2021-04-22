@@ -6,11 +6,16 @@ public class DataPacket {
     private ArrayList<DrawData> drawData;
     private int timeRemaining;
     private ArrayList<String> messages;
+    private int points;
 
-    public DataPacket(ArrayList<DrawData> drawData, int timeRemaining, ArrayList<String> messages){
+    public DataPacket(ArrayList<DrawData> drawData,
+                      int timeRemaining,
+                      ArrayList<String> messages,
+                      int points){
         this.drawData = drawData;
         this.timeRemaining = timeRemaining;
         this.messages = messages;
+        this.points = points;
     }
 
     public void setDrawData(ArrayList<DrawData> drawData){
@@ -35,5 +40,13 @@ public class DataPacket {
 
     public ArrayList<String> getMessages(){
         return this.messages;
+    }
+
+    public void setPoints(int points){
+        this.points = points;
+    }
+
+    public int getPoints(){
+        return this.points;
     }
 }
