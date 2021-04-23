@@ -508,12 +508,14 @@ public class GUI implements Runnable, WindowListener{
 	
 	/**
 	 * This method will return the oldest chat.
-	 * @return the oldest chat message
+	 * @return the chat queue
 	 */
-	public String getChat() {
-		if(chatQueue.size() > 0) return chatQueue.remove(0);
-		else return "";
+	public ArrayList<String> getChat() {
+		ArrayList<String> sendIt = chatQueue;
+		chatQueue = new ArrayList<>();
+		return sendIt;
 	}
+
 	
 	/**
 	 * This method paints to the GUI from outside the GUI. Used to update the canvas when another player paints.
@@ -544,12 +546,13 @@ public class GUI implements Runnable, WindowListener{
 	}
 	
 	/**
-	 * Returns the oldest brush stroke as DrawData objects until the log is empty, then returns null.
-	 * @return the DrawData object if there is one, else null
+	 * Returns the brush stroke as ArrayList<DrawData> object.
+	 * @return the array of DrawData objects if there is one.
 	 */
-	public DrawData getBrushStrokes() {
-		if(paintQueue.size() > 0) return paintQueue.remove(0);
-		else return null;
+	public ArrayList<DrawData> getBrushStrokes() {
+		ArrayList<DrawData> sendIt = paintQueue;
+		paintQueue = new ArrayList<>();
+		return sendIt;
 	}
 	
 	/**
