@@ -24,7 +24,7 @@ public class ServerOutputThread extends Thread {
             while (server.getServerRunning()) {
                 try {
                     //data packet
-                    TimeUnit.MILLISECONDS.sleep(100);
+                    TimeUnit.MILLISECONDS.sleep(1000);
                     DataPacket data = server.getData(client);
                     out.writeObject(data);
                     out.flush();

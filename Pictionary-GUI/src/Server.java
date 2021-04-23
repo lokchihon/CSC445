@@ -89,17 +89,13 @@ public class Server {
             public void run() {
                 System.out.println("Round will end in " + timeRemaining-- + " seconds.");
                 if(timeRemaining <= 0){
-                    try {
-                        endRound();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    endRound();
                 }
             }
         },0,1000);
     }
 
-    public void endRound() throws IOException {
+    public void endRound() {
         //stop timer
         timer.cancel();
         timer = new Timer();
@@ -122,7 +118,7 @@ public class Server {
             //!!!!!send a message welcoming the new person
             sendToAll(client.getUsername() + " has joined the game!");
         }
-        client.addMessage("Username was taken, try another one.");
+        client.addMessage("INVALID_USERNAME");
         //!!!!!else send message saying username is taken and to choose another one
 
     }
@@ -204,7 +200,8 @@ public class Server {
         return new DataPacket(drawData,
                 timeRemaining,
                 client.getMessages(),
-                client.getPoints());
+                client.getPoints(),
+                this.drawer);
     }
 
     public boolean getServerRunning(){
