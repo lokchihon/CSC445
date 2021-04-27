@@ -17,19 +17,16 @@ public class GUIWindowListener implements WindowListener{
 	@Override
 	public void windowClosed(WindowEvent arg0) {
 		g.alive = false;
-		System.out.println("Listen: closed");
 	}
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
 		g.alive = false;
-		System.out.println("Listen: Closing");
 	}
 
 	@Override
 	public void windowDeactivated(WindowEvent arg0) {
 		g.alive = false;
-		System.out.println("Listen: deactivated");
 	}
 
 	@Override

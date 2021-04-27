@@ -654,7 +654,7 @@ public class GUI implements Runnable, WindowListener{
 	 */
 	public void stopGame() {
 		playing = false;
-		//TODO This is where a popup window could be used. Alternatively, I could just send a chat.
+		JOptionPane.showMessageDialog(paintingWindow, "The game has ended.");
 	}
 	
 	/**

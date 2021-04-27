@@ -1,4 +1,3 @@
-package A3;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;

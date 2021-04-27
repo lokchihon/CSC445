@@ -10,7 +10,9 @@ public class Client extends Thread {
     ArrayList<String> messages;
 
     public boolean getDrawer() {
-        return false;
+    	//TODO show this
+        return drawer;
+    	//return false;
     }
     public void setDrawer(boolean b) { this.drawer = b;}
 
