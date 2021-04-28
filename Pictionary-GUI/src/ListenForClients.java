@@ -1,3 +1,5 @@
+package A3;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,7 +21,7 @@ class ListenForClients extends Thread{
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             while (listening) {
                 Socket socket = serverSocket.accept();
-                Client player = new Client();
+                MultiClient player = new MultiClient();
                 //creating input and output threads used to communicate with the client
                 new ServerOutputThread(server, player, socket).start();
                 try {

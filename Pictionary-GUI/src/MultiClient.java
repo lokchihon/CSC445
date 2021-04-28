@@ -1,3 +1,5 @@
+package A3;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -16,26 +18,26 @@ public class MultiClient {
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<DrawData> drawPoints = new ArrayList<DrawData>();
     private String gameStatus; //WAITING, STARTED
-    
+
     //TODO show this
     protected static final String WAITING = "WAITING";
     protected static final String STARTED = "STARTED";
 
-    
+
     private boolean sentUsername = false;
 
     private boolean clientRunning = true;
 
     private String username;
-    
+
     int packetCounter = 0;
 
 
     private int points;
 
     private static GUIMainMenu m = new GUIMainMenu();
-    
-    //TODO go over this section, it creates the drawing panel, should only be called when 
+
+    //TODO go over this section, it creates the drawing panel, should only be called when
     //m.getGameName() points to a valid, running game in the server, or is being made.
     private static GUI g;// = m.makeGUI(m.uName, "flamingo", m.host);
 
@@ -59,12 +61,19 @@ public class MultiClient {
     }
 
 
-    
 
 
+
+    public void addMessage(String message){
+        messages.add(message);
+    }
 
     public ArrayList<String> getMessages(){
         return this.messages;
+    }
+
+    public void setPoints(int points){
+        this.points = points;
     }
 
     public int getPoints(){
@@ -99,29 +108,29 @@ public class MultiClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         //TODO I think this is where the main loop should go for the client.
         while(true) {
-        	//Socket and Stream logic can go here.
-        	if(m.hasGame()) {
-        		if(m.host) {
-        			//tell the server you're making a new game
-            		g = m.makeGUI(m.uName, "flamingo", m.host);
-        		}
-        		else {
-        			//tell the server you want to get into a game, or in other words, 
-        			//is m.gameName a game the server knows about existing
-        			
-        			//if(server.hasGame(m.gameName) { or however the server keeps track of that kind of thing, probably needs the I/O sockets for that 
-        			// g = m.makeGUI(m.uName, "flamingo", m.host); 
-        			// }
-        		}
-        	}
-        	try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+            //Socket and Stream logic can go here.
+            if(m.hasGame()) {
+                if(m.host) {
+                    //tell the server you're making a new game
+                    g = m.makeGUI(m.uName, "flamingo", m.host);
+                }
+                else {
+                    //tell the server you want to get into a game, or in other words,
+                    //is m.gameName a game the server knows about existing
+
+                    //if(server.hasGame(m.gameName) { or however the server keeps track of that kind of thing, probably needs the I/O sockets for that
+                    // g = m.makeGUI(m.uName, "flamingo", m.host);
+                    // }
+                }
+            }
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -139,17 +148,17 @@ public class MultiClient {
 
 
     public void modifyPoints() {
-    	//TODO show this
+        //TODO show this
         for(DrawData d : g.getBrushStrokes()) {
-        	drawPoints.add(d);
+            drawPoints.add(d);
         }
     }
 
     public void modifyChat() {
-         //TODO show this
-    	for(String s : g.getChat()) {
-    		messages.add(s);
-    	}
+        //TODO show this
+        for(String s : g.getChat()) {
+            messages.add(s);
+        }
     }
 
 
@@ -188,46 +197,40 @@ public class MultiClient {
     public void readPacket(DataPacket data) {
         //this reads in a data packet and gets the values for the GUI
 
-    	//TODO show this, specifically the extra .getDrawer()
-            this.isDrawer = data.getDrawer().getDrawer();
+        //TODO show this, specifically the extra .getDrawer()
+        this.isDrawer = data.getDrawer().getDrawer();
 
-            if (data.getMessages() != null) {
+        if (data.getMessages() != null) {
 
-                ArrayList<String> messages = data.getMessages();
-                for (String s : messages) {
-                	//TODO show this
-                    g.addChat(g.getUsername(), s);
-                }
+            ArrayList<String> messages = data.getMessages();
+            for (String s : messages) {
+                //TODO show this
+                g.addChat(g.getUsername(), s);
+            }
 
+        }
+
+
+
+        if (!this.isDrawer && data.getDrawData() != null) {
+            ArrayList<DrawData> drawing_data = data.getDrawData();
+            for (DrawData d : drawing_data) {
+                readDataToGui(d, g);
             }
 
 
+        }
 
-            if (!this.isDrawer && data.getDrawData() != null) {
-                ArrayList<DrawData> drawing_data = data.getDrawData();
-                for (DrawData d : drawing_data) {
-                    readDataToGui(d, g);
-                }
-
-
-            }
-
-
-
-            //this updates the point value if it is different than the normal
-            updatePoints(data.getPoints());
-
-
+        //this updates the point value if it is different than the normal
+        updatePoints(data.getPoints());
     }
 
-    public boolean getDrawer() {
-        return isDrawer;
-
-    }
+    public boolean getDrawer() { return isDrawer;    }
 
     public boolean isHost() {
         return isHost;
     }
 
+    public void setDrawer(boolean b) { this.isDrawer = b;}
 
 }

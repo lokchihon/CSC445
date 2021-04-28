@@ -1,3 +1,4 @@
+package A3;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -7,11 +8,11 @@ import java.util.concurrent.TimeUnit;
 
 public class ServerOutputThread extends Thread {
     private Server server;
-    private Client client;
+    private MultiClient client;
     private Socket socket;
     private ObjectOutputStream out;
 
-    public ServerOutputThread(Server server, Client client, Socket socket) throws IOException {
+    public ServerOutputThread(Server server, MultiClient client, Socket socket) throws IOException {
         this.server = server;
         this.client = client;
         this.socket = socket;
