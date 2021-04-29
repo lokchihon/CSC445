@@ -17,6 +17,8 @@ public class MultiClient {
     private ArrayList<DrawData> drawPoints = new ArrayList<DrawData>();
     private String gameStatus; //WAITING, STARTED
 
+    private String currentWord;
+
     //TODO show this
     protected static final String WAITING = "WAITING";
     protected static final String STARTED = "STARTED";
@@ -86,13 +88,12 @@ public class MultiClient {
         return clientRunning;
     }
 
+    public String getCurrentWord() {
+        return currentWord;
+    }
+
 
     public synchronized static void main(String[] args) {
-
-
-        //really not sure about having this in the client
-
-
 
 
 
@@ -113,7 +114,7 @@ public class MultiClient {
             if(m.hasGame()) {
                 if(m.host) {
                     //tell the server you're making a new game
-                    g = m.makeGUI(m.uName, "flamingo", m.host);
+                    g = m.makeGUI(m.uName, client.getCurrentWord(), m.host);
                 }
                 else {
                     //tell the server you want to get into a game, or in other words,
@@ -163,11 +164,7 @@ public class MultiClient {
     public void readFirstPacket(DataPacket data) {
 
         //this reads the first packet that the server will send that says if you are the drawer or not
-        ArrayList<String> messages = data.getMessages();
 
-        if (messages.get(0) == "You are the drawer") {
-            this.isDrawer = true;
-        }
 
     }
 
@@ -201,6 +198,15 @@ public class MultiClient {
         if (data.getMessages() != null) {
 
             ArrayList<String> messages = data.getMessages();
+
+
+            //TODO Ask about the gui stopping guessing for all of the clients I think that is everything
+            if (messages.get(0) == "You are the drawer") {
+                this.isDrawer = true;
+
+                this.currentWord = messages.get(0);
+            }
+
             for (String s : messages) {
                 //TODO show this
                 g.addChat(g.getUsername(), s);

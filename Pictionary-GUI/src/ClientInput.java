@@ -32,6 +32,10 @@ public class ClientInput extends Thread {
 
             while (client.getClientRunning()) {
 
+
+                //TODO need to get the word being guessed from the
+
+
                 //read in a server packet, as that is the only thing the client has to read in
                 DataPacket data = (DataPacket) inputStream.readUnshared();
                 //call the read packet method that handles the packet
