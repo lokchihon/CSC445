@@ -1,7 +1,4 @@
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.MulticastSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -9,17 +6,16 @@ public class MultiClient {
 
 
     private boolean isDrawer;
-    //TODO go over this; I can't connect to anything but Pi and Altair from off campus
     private static String host = "pi.cs.oswego.edu";
     private static int portNumber = 2690;
     private boolean isHost;
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<DrawData> drawPoints = new ArrayList<DrawData>();
-    private String gameStatus; //WAITING, STARTED
 
     private String currentWord;
-
-    //TODO show this
+    
+    private static String gameStatus;
+    
     protected static final String WAITING = "WAITING";
     protected static final String STARTED = "STARTED";
 
@@ -37,17 +33,14 @@ public class MultiClient {
 
     private static GUIMainMenu m = new GUIMainMenu();
 
-    //TODO go over this section, it creates the drawing panel, should only be called when
-    //m.getGameName() points to a valid, running game in the server, or is being made.
-    private static GUI g;// = m.makeGUI(m.uName, "flamingo", m.host);
-
+    private static GUI g;
 
     public void setGameStatus(String status) {
         if (status.equals("START")) {
-            gameStatus = "STARTED";
+            gameStatus = MultiClient.STARTED;
 
         } else if (status.equals("END")) {
-            gameStatus = "WAITING";
+            gameStatus = MultiClient.WAITING;
         }
     }
 
@@ -95,8 +88,6 @@ public class MultiClient {
 
     public synchronized static void main(String[] args) {
 
-
-
         MultiClient client = new MultiClient();
 
         try (Socket s = new Socket(host, portNumber)) {
@@ -108,21 +99,10 @@ public class MultiClient {
             e.printStackTrace();
         }
 
-        //TODO I think this is where the main loop should go for the client.
         while(true) {
-            //Socket and Stream logic can go here.
             if(m.hasGame()) {
-                if(m.host) {
-                    //tell the server you're making a new game
+                if(gameStatus.equals(MultiClient.STARTED)) {
                     g = m.makeGUI(m.uName, client.getCurrentWord(), m.host);
-                }
-                else {
-                    //tell the server you want to get into a game, or in other words,
-                    //is m.gameName a game the server knows about existing
-
-                    //if(server.hasGame(m.gameName) { or however the server keeps track of that kind of thing, probably needs the I/O sockets for that
-                    // g = m.makeGUI(m.uName, "flamingo", m.host);
-                    // }
                 }
             }
             try {
@@ -147,14 +127,12 @@ public class MultiClient {
 
 
     public void modifyPoints() {
-        //TODO show this
         for(DrawData d : g.getBrushStrokes()) {
             drawPoints.add(d);
         }
     }
 
     public void modifyChat() {
-        //TODO show this
         for(String s : g.getChat()) {
             messages.add(s);
         }
@@ -192,15 +170,12 @@ public class MultiClient {
     public void readPacket(DataPacket data) {
         //this reads in a data packet and gets the values for the GUI
 
-        //TODO show this, specifically the extra .getDrawer()
         this.isDrawer = data.getDrawer().getDrawer();
 
         if (data.getMessages() != null) {
 
             ArrayList<String> messages = data.getMessages();
 
-
-            //TODO Ask about the gui stopping guessing for all of the clients I think that is everything
             if (messages.get(0) == "You are the drawer") {
                 this.isDrawer = true;
 
@@ -208,7 +183,6 @@ public class MultiClient {
             }
 
             for (String s : messages) {
-                //TODO show this
                 g.addChat(g.getUsername(), s);
             }
 
