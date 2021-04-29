@@ -1,3 +1,4 @@
+package A3;
 
 import java.io.*;
 import java.net.*;
@@ -45,11 +46,13 @@ public class Server {
 
     public void loadWordPot(String fileName) throws FileNotFoundException {
         ClassLoader classLoader = getClass().getClassLoader();
-
-        File file = new File(classLoader.getResource(fileName).getFile());
-        Scanner scanner = new Scanner(new BufferedReader(new FileReader(file)));
+        InputStream is = classLoader.getResourceAsStream("/"+fileName);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        Scanner scanner = new Scanner(reader);
         while(scanner.hasNext()){
-            wordPot.add(scanner.next());
+            String word = scanner.next();
+            System.out.println(word);
+            wordPot.add(word);
         }
         scanner.close();
     }
