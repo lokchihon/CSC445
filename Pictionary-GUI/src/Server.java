@@ -1,14 +1,16 @@
+package A3;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
 public class Server {
-    private MultiClient drawer;
-    private MultiClient gameHost;
+    private Client drawer;
+    private Client gameHost;
     private int whoHasDrawn = 0;
 
     private HashSet<String> usernames = new HashSet<>();
-    private ArrayList<MultiClient> clients = new ArrayList<>();
+    private ArrayList<Client> clients = new ArrayList<>();
     private String secretWord;
     private ArrayList<String> wordPot = new ArrayList<>();
 
@@ -44,8 +46,11 @@ public class Server {
 
     public void loadWordPot(String fileName) throws FileNotFoundException {
         ClassLoader classLoader = getClass().getClassLoader();
-        InputStream is = classLoader.getResourceAsStream("/"+fileName);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        File file = new File(classLoader.getResource("/" + fileName).getFile());
+
+        FileReader fr = new FileReader(file);
+
+        BufferedReader reader = new BufferedReader(fr);
         Scanner scanner = new Scanner(reader);
         while(scanner.hasNext()){
             String word = scanner.next();
@@ -69,7 +74,7 @@ public class Server {
         drawer = chooseDrawer();
 
         String message;
-        for(MultiClient c : clients){
+        for(Client c : clients){
             if(c != clients.get(0)){
                 c.addMessage("START");
             }
@@ -103,7 +108,7 @@ public class Server {
         timer = new Timer();
 
         //remove artist role
-        for(MultiClient c : clients){
+        for(Client c : clients){
             c.setDrawer(false);
         }
 
@@ -112,7 +117,7 @@ public class Server {
         //!!!!! enter waiting room
     }
 
-    public synchronized void playerConnected(MultiClient client){
+    public synchronized void playerConnected(Client client){
         if(validUsername(client.getUsername())){
             clients.add(client);
             //!!!!!send a message welcoming the new person
@@ -124,7 +129,7 @@ public class Server {
 
     }
 
-    public synchronized void playerDisconnected(MultiClient client) throws IOException {
+    public synchronized void playerDisconnected(Client client) throws IOException {
         clients.remove(client);
         if(clients.size() < 2) {
             endRound();
@@ -145,10 +150,10 @@ public class Server {
         this.serverSocket.close();
     }
 
-    public void sendMessage(MultiClient sender, String message) throws IOException {
+    public void sendMessage(Client sender, String message) throws IOException {
         String messageToSendOut = null;
         boolean end =  false;
-        if(!sender.hasSentUsername()){
+        if(!sender.hasUsername()){
             sender.setUsername(message);
             playerConnected(sender);
         } else if (message.equals("START") && gameHost==sender){
@@ -166,7 +171,7 @@ public class Server {
         }
 
         if(messageToSendOut != null){
-            for(MultiClient client : clients){
+            for(Client client : clients){
                 if(!(client == drawer)){
                     client.addMessage(message);
                 }
@@ -181,7 +186,7 @@ public class Server {
 
     public void sendToAll(String message){
         if(message != null){
-            for(MultiClient client : clients){
+            for(Client client : clients){
                 //!!!!!send out message
                 client.addMessage(message);
             }
@@ -198,25 +203,25 @@ public class Server {
         this.drawData = d;
     }
 
-    public synchronized DataPacket getData(MultiClient client){
+    public synchronized DataPacket getData(Client client){
         return new DataPacket(drawData,
                 timeRemaining,
                 client.getMessages(),
                 client.getPoints(),
-                this.drawer);
+                client.getUsername());
     }
 
     public boolean getServerRunning(){
         return this.serverRunning;
     }
 
-    public void calculatePoints(MultiClient sender){
+    public void calculatePoints(Client sender){
         int points = sender.getPoints();
         sender.setPoints(points+timeRemaining);
     }
 
-    public MultiClient chooseDrawer(){
-        MultiClient newDrawer = clients.get(whoHasDrawn%clients.size());
+    public Client chooseDrawer(){
+        Client newDrawer = clients.get(whoHasDrawn%clients.size());
         whoHasDrawn++;
         return newDrawer;
     }

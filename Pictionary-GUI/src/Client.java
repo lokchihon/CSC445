@@ -1,3 +1,5 @@
+package A3;
+
 import java.util.ArrayList;
 
 public class Client extends Thread {
@@ -10,9 +12,7 @@ public class Client extends Thread {
     ArrayList<String> messages;
 
     public boolean getDrawer() {
-    	//TODO show this
         return drawer;
-    	//return false;
     }
     public void setDrawer(boolean b) { this.drawer = b;}
 
@@ -23,6 +23,8 @@ public class Client extends Thread {
     public String getUsername(){
         return this.username;
     }
+
+    public void setUsername(String username){this.username = username;}
 
     public ArrayList<String> getMessages(){
         return this.messages;
@@ -35,7 +37,16 @@ public class Client extends Thread {
     public int getPoints(){
         return this.points;
     }
+
     public void setPoints(int points){
         this.points = points;
+    }
+
+    public ArrayList<DrawData> getDrawData(){
+        return this.drawData;
+    }
+
+    public void setDrawData(ArrayList<DrawData> drawData){
+        this.drawData = drawData;
     }
 }

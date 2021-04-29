@@ -1,21 +1,22 @@
+package A3;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class MultiClient {
 
-
     private boolean isDrawer;
     private static String host = "pi.cs.oswego.edu";
-    private static int portNumber = 2690;
+    private static int portNumber = 2715;
     private boolean isHost;
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<DrawData> drawPoints = new ArrayList<DrawData>();
 
     private String currentWord;
-    
+
     private static String gameStatus;
-    
+
     protected static final String WAITING = "WAITING";
     protected static final String STARTED = "STARTED";
 
@@ -169,14 +170,16 @@ public class MultiClient {
 
     public void readPacket(DataPacket data) {
         //this reads in a data packet and gets the values for the GUI
-
-        this.isDrawer = data.getDrawer().getDrawer();
+        if(this.username.equalsIgnoreCase(data.getDrawer())){
+            this.isDrawer = true;
+        }
 
         if (data.getMessages() != null) {
 
             ArrayList<String> messages = data.getMessages();
 
-            if (messages.get(0) == "You are the drawer") {
+            //TODO fix for something
+            if (messages.get(0) == "You are the drawer!") {
                 this.isDrawer = true;
 
                 this.currentWord = messages.get(0);
