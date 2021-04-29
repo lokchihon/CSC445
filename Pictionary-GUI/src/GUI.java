@@ -488,13 +488,13 @@ public class GUI implements Runnable, WindowListener{
 			chatText = firstHalf+"****"+lastHalf;
 		}
 		*/
-		if(uName.equals(username)) chatQueue.add(chatText);
+		if(uName.equals(username) && isPainter==false) chatQueue.add(chatText);
 		boolean retVal = false;
 		
-		if(!chatText.toLowerCase().contains(theWord.toLowerCase())) chatLog.add(uName+": "+chatText);
+		if(!chatText.toLowerCase().contains(theWord.toLowerCase()) && isPainter==false) chatLog.add(uName+": "+chatText);
 		else {
-			if(uName.equals(username)) timeGuessed = System.currentTimeMillis();
-			chatLog.add(uName+" guessed the word!");
+			if(uName.equals(username) && isPainter==false) timeGuessed = System.currentTimeMillis();
+			if(isPainter==false) chatLog.add(uName+" guessed the word!");
 			retVal =  true;
 		}
 		if(chatLog.size()>512) chatLog.remove(0);
@@ -672,16 +672,19 @@ public class GUI implements Runnable, WindowListener{
 	@Override
 	public void windowClosed(WindowEvent arg0) {
 		alive = false;
+		System.out.println("Closed");
 	}
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
 		alive = false;
+		System.out.println("Closing");
 	}
 
 	@Override
 	public void windowDeactivated(WindowEvent arg0) {
 		alive = false;
+		System.out.println("Deactivated");
 	}
 
 	@Override
