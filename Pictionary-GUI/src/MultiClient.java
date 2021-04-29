@@ -53,6 +53,9 @@ public class MultiClient {
     }
 
 
+    public void setCurrentWord(String s) { currentWord = s; }
+
+
 
 
 
@@ -176,12 +179,7 @@ public class MultiClient {
 
             ArrayList<String> messages = data.getMessages();
 
-            //TODO fix for something
-            if (messages.get(0) == "You are the drawer!") {
-                this.isDrawer = true;
 
-                this.currentWord = messages.get(0);
-            }
 
             for (String s : messages) {
                 g.addChat(g.getUsername(), s);

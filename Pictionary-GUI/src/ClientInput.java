@@ -33,10 +33,8 @@ public class ClientInput extends Thread {
             while (client.getClientRunning()) {
 
 
-                //TODO need to get the word being guessed from the
 
-
-                //read in a server packet, as that is the only thing the client has to read in
+                //read in a data packet, as that is the only thing the client has to read in
                 DataPacket data = (DataPacket) inputStream.readUnshared();
                 //call the read packet method that handles the packet
 
@@ -48,7 +46,10 @@ public class ClientInput extends Thread {
                         client.setGameStatus(s);
                     }  else if (s.equals("END")) {
                     client.setGameStatus(s);
-                 }
+                 } else if (s.equals("You are the drawer!")) {
+                        client.setDrawer(true);
+                        client.setCurrentWord(data.getMessages().get(data.getMessages().indexOf(s)));
+                    }
                 }
 
                 //need to receive coordinate packets and color packets and guess packets
