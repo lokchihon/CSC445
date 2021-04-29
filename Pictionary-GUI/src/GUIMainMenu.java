@@ -231,6 +231,14 @@ public class GUIMainMenu extends JFrame {
 	}
 	
 	/**
+	 * Used to tell the username is bad.
+	 */
+	public void invalidUsername() {
+		JOptionPane.showMessageDialog(mainMenu, "Username invalid.");
+		uName = "";
+	}
+	
+	/**
 	 * 
 	 * @return
 	 */
