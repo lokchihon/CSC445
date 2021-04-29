@@ -672,19 +672,16 @@ public class GUI implements Runnable, WindowListener{
 	@Override
 	public void windowClosed(WindowEvent arg0) {
 		alive = false;
-		System.out.println("Closed");
 	}
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
 		alive = false;
-		System.out.println("Closing");
 	}
 
 	@Override
 	public void windowDeactivated(WindowEvent arg0) {
 		alive = false;
-		System.out.println("Deactivated");
 	}
 
 	@Override
