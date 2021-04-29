@@ -1,3 +1,5 @@
+package A3;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.*;
@@ -5,11 +7,11 @@ import java.util.ArrayList;
 
 public class ServerInputThread extends Thread{
     private Server server;
-    private Client client;
+    private MultiClient client;
     private Socket socket;
     private ObjectInputStream in;
 
-    public ServerInputThread(Server server, Client client, Socket socket) throws IOException {
+    public ServerInputThread(Server server, MultiClient client, Socket socket) throws IOException {
         this.server = server;
         this.client = client;
         this.socket = socket;

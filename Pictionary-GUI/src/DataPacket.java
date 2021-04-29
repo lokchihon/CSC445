@@ -1,3 +1,5 @@
+package A3;
+
 import java.util.ArrayList;
 
 public class DataPacket {
@@ -5,13 +7,13 @@ public class DataPacket {
     private int timeRemaining;
     private ArrayList<String> messages;
     private int points;
-    private Client drawer;
+    private MultiClient drawer;
 
     public DataPacket(ArrayList<DrawData> drawData,
                       int timeRemaining,
                       ArrayList<String> messages,
                       int points,
-                      Client drawer){
+                      MultiClient drawer){
         this.drawData = drawData;
         this.timeRemaining = timeRemaining;
         this.messages = messages;
@@ -51,11 +53,11 @@ public class DataPacket {
         return this.points;
     }
 
-    public void setDrawer(Client drawer){
+    public void setDrawer(MultiClient drawer){
         this.drawer = drawer;
     }
 
-    public Client getDrawer(){
+    public MultiClient getDrawer(){
         return this.drawer;
     }
 }
