@@ -1,8 +1,6 @@
+package A3;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
 import java.util.*;
 
@@ -16,7 +14,7 @@ public class Server {
     private String secretWord;
     private ArrayList<String> wordPot = new ArrayList<>();
 
-    private int roundTime = 90;
+    private int roundTime = 30;
     private int timeRemaining = roundTime;
     private boolean serverRunning = true;
     private int winners = 0;
@@ -30,7 +28,7 @@ public class Server {
     private Timer timer = new Timer();
 
     public static void main(String[] args) throws IOException {
-        Server server = new Server("lol", 1234);
+        Server server = new Server("pi.cs.oswego.edu", 2715);
         new ListenForClients(server).start();
     }
 
@@ -45,8 +43,12 @@ public class Server {
         usernames.clear();
     }
 
+
     public void loadWordPot(String fileName) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new BufferedReader(new FileReader(fileName)));
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        File file = new File(classLoader.getResource(fileName).getFile());
+        Scanner scanner = new Scanner(new BufferedReader(new FileReader(file)));
         while(scanner.hasNext()){
             wordPot.add(scanner.next());
         }
@@ -123,7 +125,7 @@ public class Server {
     }
 
     public synchronized void playerDisconnected(MultiClient client) throws IOException {
-        clients.remove(client.getUsername());
+        clients.remove(client);
         if(clients.size() < 2) {
             endRound();
         } else if(client.getDrawer()){
