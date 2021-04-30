@@ -488,10 +488,15 @@ public class GUI implements Runnable, WindowListener{
 			chatText = firstHalf+"****"+lastHalf;
 		}
 		*/
-		if(uName.equals(username) && isPainter==false) chatQueue.add(chatText);
 		boolean retVal = false;
+		String addChat = chatText;
+		if(chatText.length()+uName.length() > 32) {
+			addChat(uName, chatText.substring(0, 32-uName.length()));
+			return addChat(uName, chatText.substring(32-uName.length()));
+		}
+		if(uName.equals(username) && isPainter==false) chatQueue.add(addChat);
 		
-		if(!chatText.toLowerCase().contains(theWord.toLowerCase()) && isPainter==false) chatLog.add(uName+": "+chatText);
+		if(!chatText.toLowerCase().contains(theWord.toLowerCase()) && isPainter==false) chatLog.add(uName+": "+addChat);
 		else {
 			if(uName.equals(username) && isPainter==false) timeGuessed = System.currentTimeMillis();
 			if(isPainter==false) chatLog.add(uName+" guessed the word!");
