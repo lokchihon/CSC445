@@ -36,7 +36,10 @@ public class ServerInputThread extends Thread{
                         if(chatMessage != null){
                             server.sendMessage(this.client, chatMessage);
                         }
-                    }catch (SocketException e){} catch (ClassNotFoundException e) {
+                    }catch (SocketException e){
+                    	System.out.println("This is new");
+                    	e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
@@ -45,6 +48,7 @@ public class ServerInputThread extends Thread{
             e.printStackTrace();
         }
 
+        /*
         finally {
             try {
                 server.playerDisconnected(client);
@@ -53,5 +57,6 @@ public class ServerInputThread extends Thread{
                 e.printStackTrace();
             }
         }
+        */
     }
 }

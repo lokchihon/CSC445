@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class MultiClient {
 
     private boolean isDrawer;
-    private static String host = "pi.cs.oswego.edu";
-    private static int portNumber = 2715;
+    private static String host = "localhost";
+    private static int portNumber = 8080;
     private boolean isHost;
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<DrawData> drawPoints = new ArrayList<DrawData>();
@@ -14,6 +14,7 @@ public class MultiClient {
     private String currentWord;
 
     private static String gameStatus;
+    private static String username;
 
     protected static final String WAITING = "WAITING";
     protected static final String STARTED = "STARTED";
@@ -23,7 +24,6 @@ public class MultiClient {
 
     private boolean clientRunning = true;
 
-    private String username;
 
     int packetCounter = 0;
 
@@ -63,8 +63,16 @@ public class MultiClient {
         messages.add(message);
     }
 
+    /**
+     * Pulls new chats into the messages arraylist, then sends and resets messages.
+     * @return
+     */
     public ArrayList<String> getMessages(){
-        return this.messages;
+    	ArrayList<String> retVal;
+    	modifyChat();
+    	retVal = this.messages;
+    	this.messages = new ArrayList<>();
+        return retVal;
     }
 
     public void setPoints(int points){
@@ -76,8 +84,13 @@ public class MultiClient {
     }
 
 
-    public ArrayList<DrawData> getDrawPoints() {return this.drawPoints;}
-
+    public ArrayList<DrawData> getDrawPoints() {
+    	ArrayList<DrawData> retVal;
+    	this.modifyPoints();
+    	retVal = this.drawPoints;
+    	this.drawPoints = new ArrayList<>();
+    	return retVal;
+    }
 
     public boolean getClientRunning() {
         return clientRunning;
@@ -92,19 +105,20 @@ public class MultiClient {
 
         MultiClient client = new MultiClient();
 
-        try (Socket s = new Socket(host, portNumber)) {
-
-            new ClientInput(s,client).start();
-            new ClientOutput(s,client).start();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         while(true) {
             if(m.hasGame()) {
-                if(gameStatus.equals(MultiClient.STARTED)) {
+                if(m.host || gameStatus.equals(MultiClient.STARTED)) {
+                	username = m.uName;
                     g = m.makeGUI(m.uName, client.getCurrentWord(), m.host);
+                    try (Socket s = new Socket(host, portNumber)) {
+
+                        new ClientInput(s,client).start();
+                        new ClientOutput(s,client).start();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             try {
@@ -124,7 +138,7 @@ public class MultiClient {
     }
 
     public void setUsername(String name) {
-        this.username = name;
+        username = name;
     }
 
 
@@ -171,7 +185,7 @@ public class MultiClient {
 
     public void readPacket(DataPacket data) {
         //this reads in a data packet and gets the values for the GUI
-        if(this.username.equalsIgnoreCase(data.getDrawer())){
+        if(username.equalsIgnoreCase(data.getDrawer())){
             this.isDrawer = true;
         }
 

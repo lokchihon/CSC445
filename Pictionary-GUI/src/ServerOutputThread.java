@@ -23,6 +23,8 @@ public class ServerOutputThread extends Thread {
                 try {
                     //data packet
                     TimeUnit.MILLISECONDS.sleep(1000);
+                    
+                    //TODO this won't work; sleep time is too long and the client's state when connected.
                     DataPacket data = server.getData(client);
                     out.writeObject(data);
                     out.flush();
@@ -34,6 +36,7 @@ public class ServerOutputThread extends Thread {
         }
         catch (IOException e) {e.printStackTrace();}
 
+        /*
         finally {
             try {
                 server.playerDisconnected(client);
@@ -43,5 +46,6 @@ public class ServerOutputThread extends Thread {
             }
 
         }
+        */
     }
 }

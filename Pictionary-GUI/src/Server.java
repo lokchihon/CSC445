@@ -26,7 +26,7 @@ public class Server {
     private Timer timer = new Timer();
 
     public static void main(String[] args) throws IOException {
-        Server server = new Server("pi.cs.oswego.edu", 2715);
+        Server server = new Server("localhost", 8080);
         new ListenForClients(server).start();
     }
 
@@ -44,7 +44,7 @@ public class Server {
 
     public void loadWordPot(String fileName) throws FileNotFoundException {
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("/" + fileName).getFile());
+        File file = new File(classLoader.getResource(fileName).getFile());
 
         FileReader fr = new FileReader(file);
 

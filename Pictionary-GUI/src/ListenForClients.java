@@ -16,7 +16,7 @@ class ListenForClients extends Thread{
 
     public void run( ){
         //port number
-        int portNumber = 2715;
+        int portNumber = 8080;
         boolean listening = true;
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             while (listening) {
