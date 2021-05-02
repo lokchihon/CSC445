@@ -24,7 +24,8 @@ public class ServerOutputThread extends Thread {
                     //data packet
                     TimeUnit.MILLISECONDS.sleep(1000);
                     
-                    //TODO this won't work; sleep time is too long and the client's state when connected.
+                    //TODO I'm trying to follow the stack from this point. I have concerns about client, and I'm debugging ListenForClients
+                    //as a result.
                     DataPacket data = server.getData(client);
                     out.writeObject(data);
                     out.flush();
