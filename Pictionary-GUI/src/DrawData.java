@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public class DrawData {
+public class DrawData implements Serializable {
 	
 	private final int[] points;
 	private final int brushSize;

@@ -24,22 +24,26 @@ public class ServerInputThread extends Thread {
                 //drawer
                 if (client.getDrawer()) {
                     try {
-                        ArrayList<DrawData> drawData = (ArrayList<DrawData>) in.readUnshared();
-                        this.server.setDrawData(drawData);
+//                        System.out.println("Got draw data!");
+                        DataPacket read = (DataPacket) in.readObject();
 
-                    } catch (ClassCastException ignored) {
-                    } catch (ClassNotFoundException e) {
+                        System.out.println("Getting draw data: " + read.getDrawData());
+                        this.server.setDrawData(read.getDrawData());
+
+                    } catch (ClassCastException ignored) {}
+                    catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 } else {
                     //not drawer
                     try {
                         System.out.println("Got message");
+                        Object o = in.readObject();
+                        System.out.println(o);
                         //wait for the client to send a string then reading that string
-                        if (in.readObject() instanceof String) {
+                        if (o instanceof String) {
                             System.out.println("It was a String");
-                            String chatMessage = (String) in.readObject();
-                            System.out.println(chatMessage);
+                            String chatMessage = (String) o;
                             if (chatMessage != null) {
                                 server.sendMessage(this.client, chatMessage);
                             }
@@ -49,12 +53,13 @@ public class ServerInputThread extends Thread {
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     } catch (EOFException e) {
-//                        System.out.println("EOF Exception");
+                        System.out.println("EOF Exception");
                     }
                 }
+//                TimeUnit.MILLISECONDS.sleep(1000);
             }
-            TimeUnit.MILLISECONDS.sleep(1000);
-        } catch (IOException | InterruptedException e) {
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

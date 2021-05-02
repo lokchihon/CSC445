@@ -21,6 +21,8 @@ public class Server {
     private String host;
     private int port;
 
+    private boolean roundStarted = false;
+
     private ArrayList<DrawData> drawData;
 
     private Timer timer = new Timer();
@@ -60,12 +62,14 @@ public class Server {
     }
 
     public void newRound() {
+        roundStarted = true;
         secretWord = getSecretWord();
         wordPot.remove(secretWord);
         winners = 0;
 
         //!!!!!choose artist
         drawer = chooseDrawer();
+        drawer.setDrawer(true);
 
         String message;
         for(Client c : clients){
@@ -88,7 +92,8 @@ public class Server {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("Round will end in " + timeRemaining-- + " seconds.");
+//                System.out.println("Round will end in " + timeRemaining-- + " seconds.");
+                timeRemaining--;
                 if(timeRemaining <= 0){
                     endRound();
                 }
@@ -108,6 +113,8 @@ public class Server {
 
         //!!!!!!!!!!send message saying round has ended
         sendToAll("END");
+
+        roundStarted = false;
         //!!!!! enter waiting room
     }
 
@@ -148,22 +155,31 @@ public class Server {
     public void sendMessage(Client sender, String message) throws IOException {
         String messageToSendOut = null;
         boolean end =  false;
+
         if(!sender.hasUsername()){
+            System.out.println("Setting username");
             sender.setUsername(message);
+            sender.setHasUsername(true);
             playerConnected(sender);
         } else if (message.equals("START") && gameHost==sender){
+            System.out.println("Starting new round!");
             newRound();
-        } else if(message.toLowerCase().equals(secretWord.toLowerCase())){
-            messageToSendOut = sender.getUsername() + " has guessed the secret word!";
-            //!!!!!!!!!!!!!need to calculate points based on countdown clock
-            calculatePoints(sender);
-            winners++;
-            if(winners == clients.size()-1){
-                end = true;
+        }
+        else if(roundStarted) {
+            if (message.toLowerCase().equals(secretWord.toLowerCase())) {
+                messageToSendOut = sender.getUsername() + " has guessed the secret word!";
+                //!!!!!!!!!!!!!need to calculate points based on countdown clock
+                calculatePoints(sender);
+                winners++;
+                if (winners == clients.size() - 1) {
+                    end = true;
+                }
             }
-        } else {
+        }
+        else {
             messageToSendOut = sender.getUsername() + ": " + message;
         }
+
 
         if(messageToSendOut != null){
             for(Client client : clients){

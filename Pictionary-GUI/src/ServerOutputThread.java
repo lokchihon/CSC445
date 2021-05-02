@@ -22,16 +22,17 @@ public class ServerOutputThread extends Thread {
             while (server.getServerRunning()) {
                 try {
                     //data packet
-                    System.out.println("Getting things to send!");
+//                    System.out.println("Getting things to send!");
                     DataPacket data = server.getData(client);
 //                    out.writeObject(data);
 //                    out.flush();
 //                    System.out.println("Sent something");
-                    TimeUnit.MILLISECONDS.sleep(1000);
+//                    TimeUnit.MILLISECONDS.sleep(1000);
 
-                }catch (ConcurrentModificationException ignore){} catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                }catch (ConcurrentModificationException ignore){}
+//                catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
 //        }
 //        catch (IOException e) {e.printStackTrace();}

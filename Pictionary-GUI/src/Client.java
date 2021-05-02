@@ -4,20 +4,22 @@ import java.util.ArrayList;
 
 public class Client extends Thread {
     private String username;
+    private boolean hasUsername = false;
     private boolean drawer = false;
 
     private int points = 0;
 
-    ArrayList<DrawData> drawData;
-    ArrayList<String> messages;
+    private ArrayList<String> messages = new ArrayList<>();
 
     public boolean getDrawer() {
         return drawer;
     }
     public void setDrawer(boolean b) { this.drawer = b;}
 
+    public void setHasUsername(boolean b) { this.hasUsername = b;}
+
     public boolean hasUsername() {
-        return true;
+        return hasUsername;
     }
 
     public String getUsername(){
@@ -42,11 +44,4 @@ public class Client extends Thread {
         this.points = points;
     }
 
-    public ArrayList<DrawData> getDrawData(){
-        return this.drawData;
-    }
-
-    public void setDrawData(ArrayList<DrawData> drawData){
-        this.drawData = drawData;
-    }
 }

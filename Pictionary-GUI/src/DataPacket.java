@@ -1,6 +1,8 @@
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class DataPacket {
+public class DataPacket implements Serializable {
     private ArrayList<DrawData> drawData;
     private int timeRemaining;
     private ArrayList<String> messages;
