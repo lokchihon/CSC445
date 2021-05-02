@@ -59,7 +59,7 @@ public class GUI implements Runnable, WindowListener{
     public GUI(String user, boolean tooltips, boolean painter, String wordString) {
     	username = user;
     	isPainter = painter;
-    	theWord = wordString;
+    	if(wordString!=null)theWord = wordString;
     	word = new JLabel(theWord);
     	this.run();
     	triggerColorLabels(tooltips);
