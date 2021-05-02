@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 class ListenForClients extends Thread{
     protected int numberOfClients = 0;
-    private boolean gameStart = false;
     private Server server;
 
     public ListenForClients(Server server) {
@@ -21,13 +20,18 @@ class ListenForClients extends Thread{
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             while (listening) {
                 Socket socket = serverSocket.accept();
+                System.out.println("Found a client!");
                 Client player = new Client() ;
                 //creating input and output threads used to communicate with the client
                 new ServerOutputThread(server, player, socket).start();
-                try {
-                    TimeUnit.MILLISECONDS.sleep(1000);
-                } catch (InterruptedException e) {e.printStackTrace();}
+                System.out.println("Made a server output thread");
+//                try {
+//                    TimeUnit.MILLISECONDS.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 new ServerInputThread(server, player, socket).start();
+                System.out.println("Made a server input thread!");
                 numberOfClients ++;
 
                 if(numberOfClients > 8){

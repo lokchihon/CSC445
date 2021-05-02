@@ -43,16 +43,12 @@ public class Server {
 
 
     public void loadWordPot(String fileName) throws FileNotFoundException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("/" + fileName).getFile());
-
-        FileReader fr = new FileReader(file);
+        FileReader fr = new FileReader(new File(fileName));
 
         BufferedReader reader = new BufferedReader(fr);
         Scanner scanner = new Scanner(reader);
         while(scanner.hasNext()){
             String word = scanner.next();
-            System.out.println(word);
             wordPot.add(word);
         }
         scanner.close();
@@ -123,6 +119,7 @@ public class Server {
         }
         client.addMessage("INVALID_USERNAME");
         //!!!!!else send message saying username is taken and to choose another one
+
         gameHost = clients.get(0);
 
     }
