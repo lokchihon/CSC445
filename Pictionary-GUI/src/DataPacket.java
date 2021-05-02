@@ -8,17 +8,20 @@ public class DataPacket implements Serializable {
     private ArrayList<String> messages;
     private int points;
     private String drawer;
+    private String host;
 
     public DataPacket(ArrayList<DrawData> drawData,
                       int timeRemaining,
                       ArrayList<String> messages,
                       int points,
-                      String drawer){
+                      String drawer,
+                      String host){
         this.drawData = drawData;
         this.timeRemaining = timeRemaining;
         this.messages = messages;
         this.points = points;
         this.drawer = drawer;
+        this.host = host;
     }
 
     public void setDrawData(ArrayList<DrawData> drawData){
@@ -60,4 +63,8 @@ public class DataPacket implements Serializable {
     public String getDrawer(){
         return this.drawer;
     }
+
+    public void setHost(String host){ this.host = host;}
+
+    public String getHost(){ return this.host; }
 }

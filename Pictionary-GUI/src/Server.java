@@ -219,7 +219,8 @@ public class Server {
                 timeRemaining,
                 client.getMessages(),
                 client.getPoints(),
-                client.getUsername());
+                client.getUsername(),
+                gameHost.getUsername());
     }
 
     public boolean getServerRunning(){
