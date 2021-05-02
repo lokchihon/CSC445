@@ -17,6 +17,7 @@ public class ClientInput extends Thread {
 
         try {
             this.inputStream = new ObjectInputStream(s.getInputStream());
+            System.out.println("Made the input thread");
             this.client = client;
 
 
@@ -33,10 +34,17 @@ public class ClientInput extends Thread {
             while (client.getClientRunning()) {
 
 
+                try {
 
+                System.out.println("In the while loop");
                 //read in a data packet, as that is the only thing the client has to read in
                 DataPacket data = (DataPacket) inputStream.readUnshared();
+                System.out.println("Hit the read");
                 //call the read packet method that handles the packet
+
+
+
+
 
                 client.setSentUsername(true);
                 for (String s : data.getMessages()) {
@@ -55,9 +63,16 @@ public class ClientInput extends Thread {
                 //need to receive coordinate packets and color packets and guess packets
                 client.readPacket(data);
 
+                }catch(ClassCastException ignored){} catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
+
+            System.out.println("Why tf is it hitting here");
             e.printStackTrace();
         }
     }
