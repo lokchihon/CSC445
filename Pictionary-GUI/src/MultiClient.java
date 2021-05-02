@@ -11,9 +11,9 @@ public class MultiClient {
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<DrawData> drawPoints = new ArrayList<DrawData>();
 
-    private String currentWord;
+    private String currentWord = "MISSING WORD";
 
-    private static String gameStatus;
+    private static String gameStatus = "WAITING";
     private static String username;
 
     protected static final String WAITING = "WAITING";
