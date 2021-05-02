@@ -1,19 +1,20 @@
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class MultiClient {
 
-    private boolean isDrawer;
-    private static String host = "localhost";
-    private static int portNumber = 8080;
-    private boolean isHost;
+    private boolean isDrawer = true;
+    private static String host = "pi.cs.oswego.edu";
+    private static int portNumber = 2715;
+    private boolean isHost = true;
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<DrawData> drawPoints = new ArrayList<DrawData>();
 
-    private String currentWord = "MISSING WORD";
+    private String currentWord;
 
-    private static String gameStatus = "WAITING";
+    private static String gameStatus;
     private static String username;
 
     protected static final String WAITING = "WAITING";
@@ -33,6 +34,12 @@ public class MultiClient {
     private static GUIMainMenu m = new GUIMainMenu();
 
     private static GUI g;
+
+
+    public void setIsHost(Boolean b) {
+        this.isHost = b;
+    }
+
 
     public void setGameStatus(String status) {
         if (status.equals("START")) {
@@ -111,12 +118,13 @@ public class MultiClient {
                 if(m.host || gameStatus.equals(MultiClient.STARTED)) {
                 	username = m.uName;
                     g = m.makeGUI(m.uName, client.getCurrentWord(), m.host);
-                    try (Socket s = new Socket(host, portNumber)) {
-
+                    try  {
+                        Socket s = new Socket(host, portNumber);
                         new ClientInput(s,client).start();
                         new ClientOutput(s,client).start();
 
                     } catch (IOException e) {
+                        System.out.println("Hitting the IOException in the MC main method");
                         e.printStackTrace();
                     }
                 }
@@ -142,12 +150,18 @@ public class MultiClient {
     }
 
 
+
+
+    //This will add the points from the gui to the array of points to be sent to the server
+
     public void modifyPoints() {
         for(DrawData d : g.getBrushStrokes()) {
             drawPoints.add(d);
         }
     }
 
+
+    // This will add the points from the gui to the local messages
     public void modifyChat() {
         for(String s : g.getChat()) {
             messages.add(s);
@@ -155,12 +169,8 @@ public class MultiClient {
     }
 
 
-    public void readFirstPacket(DataPacket data) {
 
-        //this reads the first packet that the server will send that says if you are the drawer or not
-
-
-    }
+    //This gets the points from a single draw data and draws it on a GUI
 
 
     public void readDataToGui(DrawData drawData, GUI g) {
@@ -175,6 +185,9 @@ public class MultiClient {
     }
 
 
+
+    //A method for updating the points based on what comes from the server
+
     public void updatePoints(int pointVal) {
         if (this.points != pointVal) {
             this.points = pointVal;
@@ -182,6 +195,8 @@ public class MultiClient {
     }
 
 
+
+    //The main method for reading from a packet and converting the data into useful variables
 
     public void readPacket(DataPacket data) {
         //this reads in a data packet and gets the values for the GUI

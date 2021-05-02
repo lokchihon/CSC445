@@ -18,6 +18,7 @@ public class ClientOutput extends Thread {
 
         try {
             this.outputStream = new ObjectOutputStream(s.getOutputStream());
+            System.out.println("made the output thread");
             this.client = client;
 
 
@@ -32,29 +33,61 @@ public class ClientOutput extends Thread {
 
         try {
 
+            outputStream.writeObject("Hello");
+            outputStream.flush();
+            outputStream.reset();
+
+            try {
+                TimeUnit.MILLISECONDS.sleep(1000);
+            } catch (InterruptedException e) {e.printStackTrace();}
+
+
             while (client.getClientRunning()) {
+
 
                 try {
 
+
+
                     if (!client.hasSentUsername()) {
-                        outputStream.writeChars(client.getUsername());
+                        System.out.println("Sent the username " + client.getUsername());
+                        outputStream.writeObject(client.getUsername());
+                        outputStream.flush();
+                        outputStream.reset();
+                        client.setSentUsername(true);
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(1000);
+                        } catch (InterruptedException e) {e.printStackTrace();}
                     }
+
 
 
 
                     if (client.isHost()) {
 
-                        outputStream.writeChars("START");
+                        System.out.println("sent the start message");
+                        outputStream.writeObject("START");
+                        outputStream.flush();
+                        outputStream.reset();
+                        client.setIsHost(false);
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(1000);
+                        } catch (InterruptedException e) {e.printStackTrace();}
                     }
 
                     if (client.getDrawer()) {
-                        TimeUnit.MILLISECONDS.sleep(100);
+                       // System.out.println("Is drawer");
+                       // System.out.println(client.getDrawPoints());
                         //Checks to make sure that the data is not empty before writing.
                         ArrayList<DrawData> draws = client.getDrawPoints();
                         if(draws.size()>0) {
-                        	outputStream.writeUnshared(draws);
+                            DataPacket data = new DataPacket(draws, 0,new ArrayList<String>(),0,"H");
+                        	outputStream.writeUnshared(data);
+                            System.out.println("Sent the draw data");
                             outputStream.flush();
                             outputStream.reset();
+
+                            
                         }
                         outputStream.writeUnshared(client.getDrawPoints());
                         outputStream.flush();
