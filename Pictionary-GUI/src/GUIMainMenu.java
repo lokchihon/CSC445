@@ -1,4 +1,8 @@
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -6,6 +10,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -27,11 +32,15 @@ public class GUIMainMenu extends JFrame {
 	protected String word = "MISSING WORD";
 	protected boolean host = false;
 	
+	private int xAt;
+	private int yAt;
+	private int xWas;
+	private int yWas;
 	private boolean seen = false;
 	private JPanel mainMenu;
+	private int color = 0;
 	
 	public GUIMainMenu() {
-		//TODO make pretty lines draw across the screen outside the button area, or something
 		
 		JFrame menuFrame = new JFrame("Not Pictionary (for legal reasons) Pictionary");
 		menuFrame.setResizable(false);
@@ -39,8 +48,80 @@ public class GUIMainMenu extends JFrame {
 		menuFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		menuFrame.setVisible(true);
 		
+		if(((int)(Math.random()*10))>=5) {
+			xAt = (int)(Math.random()*60)+360;
+			yAt = (int)(Math.random()*150)+270;
+		}
+		else {
+			xAt = (int)(Math.random()*60);
+			yAt = (int)(Math.random()*150);
+		}
+
 		//This is where all the action happens.
-		mainMenu = new JPanel(new GridBagLayout());
+		mainMenu = new JPanel(new GridBagLayout()){
+			//This, specifically, is the pretty line drawer.
+			/**
+			 * Java wanted this.
+			 */
+			private static final long serialVersionUID = 3792653185561200410L;
+
+			@Override
+            public void paintComponents(Graphics g){
+				Color c;
+				switch (color%6) {
+					case 0:{
+						c = Color.RED;
+						break;
+					}
+					case 1:{
+						c = Color.ORANGE;
+						break;
+					}
+					case 2:{
+						c = Color.YELLOW;
+						break;
+					}
+					case 3:{
+						c = Color.GREEN;
+						break;
+					}
+					case 4:{
+						c = Color.BLUE;
+						break;
+					}
+					default:{
+						c = Color.MAGENTA;
+						break;
+					}
+				}
+				color++;
+                g.setColor(c);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                
+                xWas = xAt;
+                xAt = generateX();
+                yWas = yAt;
+                yAt = generateY();
+
+                g2.drawLine(xAt, yAt, xWas, yWas);
+                
+            }
+			
+        };
+        mainMenu.addMouseMotionListener(new MouseMotionListener() {
+
+			@Override
+			public void mouseDragged(MouseEvent arg0) {
+				//Do nothing
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+				mainMenu.paintComponents(mainMenu.getGraphics());
+			}
+        	
+        });
 		final JButton beginGame = new JButton("Host New Game");
 		final JButton joinAGame = new JButton("Join Existing Game");
 		final String select = "(choose a username)";
@@ -225,6 +306,15 @@ public class GUIMainMenu extends JFrame {
 		menuFrame.validate();
 		menuFrame.repaint();
 		
+		while(true) {
+			mainMenu.paintComponents(mainMenu.getGraphics());
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 	/**
@@ -284,6 +374,52 @@ public class GUIMainMenu extends JFrame {
 	public void removeGame() {
 		gameName = "";
 		g = null;
+	}
+	
+	private int generateX() {
+		
+        int xAdd = (int)(Math.random()*30);
+        int xPosNeg = (int)(Math.random()*2);
+        if(xPosNeg>=1) xAdd*=-1;
+        int retVal = xAdd+xAt;
+        
+        if(retVal > 0 && retVal < 420) {
+        	if((120 < yAt && yAt < 270) && (60 < retVal && retVal < 360)) {
+        		if(((int)(Math.random()*10))>=5) {
+        			xWas = (int)(Math.random()*60)+360;
+        			return xWas;
+        		}
+        		else {
+        			xWas = (int)(Math.random()*60);
+        			return xWas;
+        		}
+        	}
+        	else return retVal;
+        }
+        else return generateX();
+	}
+	
+	private int generateY() {
+        
+        int yAdd = (int)(Math.random()*30);
+        int yPosNeg = (int)(Math.random()*2);
+        if(yPosNeg>=1) yAdd*=-1;
+        int retVal = yAdd+yAt;
+        
+        if(retVal > 0 && retVal < 420) {
+        	if((60 < xAt && xAt < 360) && (120 < retVal && retVal < 270)) {
+        		if(((int)(Math.random()*10))>=5) {
+        			yWas = (int)(Math.random()*120)+270;
+        			return yWas;
+        		}
+        		else {
+        			yWas = (int)(Math.random()*120);
+        			return yWas;
+        		}
+        	}
+        	else return retVal;
+        }
+        else return generateY();
 	}
 
 }
