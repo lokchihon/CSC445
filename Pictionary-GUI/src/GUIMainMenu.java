@@ -2,6 +2,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -25,6 +27,7 @@ public class GUIMainMenu extends JFrame {
 	protected String word = "MISSING WORD";
 	protected boolean host = false;
 	
+	private boolean seen = false;
 	private JPanel mainMenu;
 	
 	public GUIMainMenu() {
@@ -116,6 +119,7 @@ public class GUIMainMenu extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				uNameField.setText("");
+				if(urlField.getText().equals("")) urlField.setText("(enter game name)"); 
 			}
 
 			@Override
@@ -139,6 +143,20 @@ public class GUIMainMenu extends JFrame {
 			}
 			
 		});
+		uNameField.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				if(seen==true && uNameField.getText().equals("(choose a username)")) uNameField.setText("");
+				seen = true;
+			}
+
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				if(uNameField.getText().equals("")) uNameField.setText("(choose a username)");
+			}
+			
+		});
 		GridBagConstraints nameConst = new GridBagConstraints();
 		nameConst.gridx = 0;
 		nameConst.gridy = 0;
@@ -152,6 +170,7 @@ public class GUIMainMenu extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				urlField.setText("");
+				if(uNameField.getText().equals("")) uNameField.setText("(choose a username)");
 			}
 
 			@Override
@@ -172,6 +191,19 @@ public class GUIMainMenu extends JFrame {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
 				//Do nothing
+			}
+			
+		});
+		urlField.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				if(urlField.getText().equals("(enter game name)")) urlField.setText("");
+			}
+
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				if(urlField.getText().equals("")) urlField.setText("(enter game name)");
 			}
 			
 		});
