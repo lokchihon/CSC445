@@ -306,14 +306,7 @@ public class GUIMainMenu extends JFrame {
 		menuFrame.validate();
 		menuFrame.repaint();
 		
-		while(true) {
-			mainMenu.paintComponents(mainMenu.getGraphics());
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		bePretty();
 		
 	}
 	
@@ -420,6 +413,18 @@ public class GUIMainMenu extends JFrame {
         	else return retVal;
         }
         else return generateY();
+	}
+	
+	/**
+	 * Call this every x00 miliseconds or so to paint pretty lines. 
+	 */
+	public void bePretty() {
+		mainMenu.paintComponents(mainMenu.getGraphics());
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 }
