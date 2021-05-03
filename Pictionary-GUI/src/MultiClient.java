@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 public class MultiClient {
 
     private boolean isDrawer = true;
-    private static String host = "pi.cs.oswego.edu";
-    private static int portNumber = 2715;
+    private static String host = "localhost";
+    private static int portNumber = 8080;
     private boolean isHost = true;
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<DrawData> drawPoints = new ArrayList<DrawData>();
@@ -114,6 +114,7 @@ public class MultiClient {
 
 
         while(true) {
+        	m.bePretty();
             if(m.hasGame()) {
                 if(m.host || gameStatus.equals(MultiClient.STARTED)) {
                 	username = m.uName;
