@@ -302,7 +302,7 @@ public class MultiClient {
 
         this.currentTime = data.getTimeRemaining();
         g.updateTimer(data.getTimeRemaining());
-        g.setWord(currentWord);
+        //g.setWord(currentWord);
     }
 
     public boolean getDrawer() { return isDrawer;    }
@@ -312,5 +312,9 @@ public class MultiClient {
     }
 
     public void setDrawer(boolean b) { this.isDrawer = b;}
+
+    public void setWord(String s) {
+        g.setWord(s);
+    }
 
 }

@@ -40,11 +40,13 @@ public class ClientInput extends Thread {
                 //call the read packet method that handles the packet
 
                 for (String s : data.getMessages()) {
-                    System.out.println(s);
+                    System.out.println("The message is " + s);
 
                     if (s.contains("SECRET_WORD")){
                         System.out.println("The secret word is " + s.substring(11));
                         client.setCurrentWord(s.substring(11));
+                        //For some reason putting it here works better
+                        client.setWord(s.substring(11));
                     }
 
                     if (s.equals("INVALID_USERNAME")) {
@@ -65,7 +67,12 @@ public class ClientInput extends Thread {
                 }
 
                 //need to receive coordinate packets and color packets and guess packets
-                client.readPacket(data);
+
+
+                 if (data.getMessages() != null) {
+                     client.readPacket(data);
+                 }
+
 
                 }catch(ClassCastException ignored){} catch (ClassNotFoundException e) {
                     e.printStackTrace();
