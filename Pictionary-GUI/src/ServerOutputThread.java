@@ -26,9 +26,10 @@ public class ServerOutputThread extends Thread {
                     //data packet
 //                    System.out.println("Getting things to send!");
                     DataPacket data = server.getData(client);
-                    EDataPacket edata = new EDataPacket(eh.encode(key,data));
-                    out.writeObject(edata);
+//                    EDataPacket edata = new EDataPacket(eh.encode(key,data));
+                    out.writeObject(data);
                     out.flush();
+                    out.reset();
 //                    System.out.println("Sent something");
                     TimeUnit.MILLISECONDS.sleep(1000);
 

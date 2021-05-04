@@ -24,12 +24,14 @@ public class ServerInputThread extends Thread {
         try {
             while (server.getServerRunning()) {
                 //drawer
+//                System.out.println("CLIENT GET DRAWER " + client.getDrawer());
                 if (client.getDrawer()) {
                     try {
 //                        System.out.println("Got draw data!");
-                        EDataPacket eread = (EDataPacket) in.readObject();
-                        DataPacket read = eh.decode(key, eread.getData());
+//                        EDataPacket eread = (EDataPacket) in.readObject();
+//                        DataPacket read = eh.decode(key, eread.getData());
 
+                        DataPacket read = (DataPacket) in.readObject();
                         System.out.println("Getting draw data: " + read.getDrawData());
                         this.server.setDrawData(read.getDrawData());
 

@@ -3,9 +3,10 @@ import java.net.*;
 import java.util.*;
 
 public class Server {
-    private Client drawer;
-    private Client gameHost;
+    private Client drawer = new Client();
+    private Client gameHost = new Client();
     private int whoHasDrawn = 0;
+    private String gameName;
 
     private HashSet<String> usernames = new HashSet<>();
     private ArrayList<Client> clients = new ArrayList<>();
@@ -85,7 +86,7 @@ public class Server {
                 //!!!!!send the drawer the secret word
                 message = "You are the drawer!";
                 c.addMessage(message);
-                message = "The secret word is: " + secretWord;
+                message = "SECRET_WORD " + secretWord;
                 c.addMessage(message);
             }
         }
@@ -124,7 +125,7 @@ public class Server {
             //!!!!!send a message welcoming the new person
             sendToAll(client.getUsername() + " has joined the game!");
         }
-        client.addMessage("INVALID_USERNAME");
+//        client.addMessage("INVALID_USERNAME");
         //!!!!!else send message saying username is taken and to choose another one
 
         gameHost = clients.get(0);
@@ -155,8 +156,10 @@ public class Server {
     public void sendMessage(Client sender, String message) throws IOException {
         String messageToSendOut = null;
         boolean end =  false;
-
-        if(!sender.hasUsername()){
+        if(message.contains("GAME_NAME")){
+            gameName = message;
+        }
+        else if(!sender.hasUsername()){
             System.out.println("Setting username");
             sender.setUsername(message);
             sender.setHasUsername(true);
@@ -218,11 +221,25 @@ public class Server {
     }
 
     public synchronized DataPacket getData(Client client){
+
+//        System.out.println("DRAW DATA");
+//        System.out.println(drawData);
+//        System.out.println("TIME REMAINING");
+//        System.out.println(timeRemaining);
+//        System.out.println("MESSAGES");
+//        System.out.println(client.getMessages());
+//        System.out.println("POINTS");
+//        System.out.println(client.getPoints());
+//        System.out.println("DRAWER");
+//        System.out.println(drawer.getUsername());
+//        System.out.println("GAME HOST");
+//        System.out.println(gameHost.getUsername());
+
         return new DataPacket(drawData,
                 timeRemaining,
                 client.getMessages(),
                 client.getPoints(),
-                client.getUsername(),
+                drawer.getUsername(),
                 gameHost.getUsername());
     }
 
