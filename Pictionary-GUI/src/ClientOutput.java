@@ -41,14 +41,10 @@ public class ClientOutput extends Thread {
                 e.printStackTrace();
             }
 
-
             while (client.getClientRunning()) {
 
-
                 try {
-
-
-                    System.out.println("Has not sent username");
+//                    System.out.println("Sent username?: "+ client.hasSentUsername());
                     if (!client.hasSentUsername()) {
                         System.out.println("Sent the username " + client.getUsername());
                         outputStream.writeObject(client.getUsername());
@@ -78,9 +74,11 @@ public class ClientOutput extends Thread {
                         client.setSendClear(true);
                     }
 
-
+                    System.out.println("GAME STATUS: " + client.getGameStatus());
                     if (client.getGameStatus().equals("STARTED")) {
 
+                        System.out.println("HOST " + client.isHost());
+                        System.out.println("GETSENTSTART " + client.getSentStart());
                         if (client.isHost() && !client.getSentStart()) {
 
 
@@ -88,10 +86,11 @@ public class ClientOutput extends Thread {
 
 
                             System.out.println("sent the start message");
+
                             outputStream.writeObject("START");
                             outputStream.flush();
                             outputStream.reset();
-                            client.setSentStart(false);
+                            client.setSentStart(true);
 
 
                             try {

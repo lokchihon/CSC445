@@ -117,6 +117,7 @@ public class GUI implements Runnable, WindowListener{
             client.setGameStatus("START");
         	startButton.setVisible(false);
         	playing = true;
+
         });
         startButton.setVisible(false);
         startButton.setPreferredSize(new Dimension(100,100));
@@ -732,5 +733,8 @@ public class GUI implements Runnable, WindowListener{
 	@Override
 	public void windowOpened(WindowEvent arg0) {
 	}
-	
+
+	public boolean getIsPainter(){
+	    return this.isPainter;
+    }
 }

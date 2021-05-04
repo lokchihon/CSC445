@@ -32,21 +32,14 @@ public class ClientInput extends Thread {
 
 
             while (client.getClientRunning()) {
-
-
                 try {
 
-                System.out.println("In the while loop");
+//                System.out.println("In the while loop");
                 //read in a data packet, as that is the only thing the client has to read in
                 DataPacket data = (DataPacket) inputStream.readUnshared();
-                System.out.println("Hit the read");
+//                System.out.println("Hit the read");
                 //call the read packet method that handles the packet
 
-
-
-
-
-                client.setSentUsername(true);
                 for (String s : data.getMessages()) {
                     if (s.equals("INVALID_USERNAME")) {
                         client.setSentUsername(false);
@@ -59,6 +52,9 @@ public class ClientInput extends Thread {
                  } else if (s.equals("You are the drawer!")) {
                         client.setDrawer(true);
                         client.setCurrentWord(data.getMessages().get(data.getMessages().indexOf(s)));
+                    }
+                    else if (s.contains("SECRET_WORD")){
+                        client.setCurrentWord(s.substring(11));
                     }
                 }
 

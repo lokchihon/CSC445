@@ -41,7 +41,7 @@ public class MultiClient {
 
     private int points;
 
-    private int currentTime;
+    private int currentTime = 30;
 
     private static GUIMainMenu m = new GUIMainMenu();
 
@@ -287,7 +287,7 @@ public class MultiClient {
 
         }
 
-        //synching the clocks
+        //syncing the clocks
 
         if (data.getHost() != null) {
 
@@ -301,6 +301,9 @@ public class MultiClient {
         updatePoints(data.getPoints());
 
         this.currentTime = data.getTimeRemaining();
+        g.updateTimer(data.getTimeRemaining());
+
+//        g.giveWord(g.getIsPainter(),currentWord);
     }
 
     public boolean getDrawer() { return isDrawer;    }
