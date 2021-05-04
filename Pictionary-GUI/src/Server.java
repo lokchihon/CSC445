@@ -175,6 +175,9 @@ public class Server {
                     end = true;
                 }
             }
+            else if(message.toLowerCase().equals("CLEAR") && drawer==sender){
+                messageToSendOut = "CLEAR";
+            }
         }
         else {
             messageToSendOut = sender.getUsername() + ": " + message;
