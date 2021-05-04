@@ -79,6 +79,7 @@ public class ClientOutput extends Thread {
 
                         System.out.println("HOST " + client.isHost());
                         System.out.println("GETSENTSTART " + client.getSentStart());
+                        System.out.println(client.getCurrentWord());
                         if (client.isHost() && !client.getSentStart()) {
 
 

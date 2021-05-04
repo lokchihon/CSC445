@@ -578,6 +578,29 @@ public class GUI implements Runnable, WindowListener{
 		paintQueue = new ArrayList<>();
 		return sendIt;
 	}
+
+
+
+	public void setWord(String keyWord) {
+
+        theWord = keyWord;
+        if(isPainter) word.setText(theWord);
+        else {
+            String blanks = "";
+            for(int q = 0; q < theWord.length(); q++) {
+                blanks += "__  ";
+            }
+            word.setText(blanks);
+        }
+
+        word.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+        wordsPanel.validate();
+        wordsPanel.repaint();
+    }
+
+
+
+
 	
 	/**
 	 * Checks the status of the player's ability to paint and sets the word being guessed / drawn. Has a limit of 14 characters.

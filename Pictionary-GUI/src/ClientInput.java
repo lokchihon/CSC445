@@ -36,11 +36,17 @@ public class ClientInput extends Thread {
 
 //                System.out.println("In the while loop");
                 //read in a data packet, as that is the only thing the client has to read in
-                DataPacket data = (DataPacket) inputStream.readUnshared();
-//                System.out.println("Hit the read");
+                DataPacket data = (DataPacket) inputStream.readObject();
                 //call the read packet method that handles the packet
 
                 for (String s : data.getMessages()) {
+                    System.out.println(s);
+
+                    if (s.contains("SECRET_WORD")){
+                        System.out.println("The secret word is " + s.substring(11));
+                        client.setCurrentWord(s.substring(11));
+                    }
+
                     if (s.equals("INVALID_USERNAME")) {
                         client.setSentUsername(false);
                     } else if (s.equals("START")) {
@@ -50,12 +56,12 @@ public class ClientInput extends Thread {
                     }  else if (s.equals("CLEAR")) {
                         client.clearCanvas();
                  } else if (s.equals("You are the drawer!")) {
+                        System.out.println("You are the drawer");
                         client.setDrawer(true);
-                        client.setCurrentWord(data.getMessages().get(data.getMessages().indexOf(s)));
+
+
                     }
-                    else if (s.contains("SECRET_WORD")){
-                        client.setCurrentWord(s.substring(11));
-                    }
+
                 }
 
                 //need to receive coordinate packets and color packets and guess packets
