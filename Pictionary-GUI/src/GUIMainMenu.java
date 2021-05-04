@@ -314,9 +314,10 @@ public class GUIMainMenu extends JFrame {
 	 * 
 	 * @return
 	 */
-	public GUI makeGUI(String username, String word, boolean hosting) {
+	public GUI makeGUI(String username, String word, boolean hosting, MultiClient client) {
 		g = null;
-		g = new GUI(username, true, hosting, word);
+		client.setGameName(gameName);
+		g = new GUI(username, true, hosting, word, client);
 		gameName = "";
 		return g;
 	}

@@ -54,6 +54,8 @@ public class ClientInput extends Thread {
                         client.setGameStatus(s);
                     }  else if (s.equals("END")) {
                     client.setGameStatus(s);
+                    }  else if (s.equals("CLEAR")) {
+                        client.clearCanvas();
                  } else if (s.equals("You are the drawer!")) {
                         client.setDrawer(true);
                         client.setCurrentWord(data.getMessages().get(data.getMessages().indexOf(s)));

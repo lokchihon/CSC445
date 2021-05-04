@@ -6,16 +6,26 @@ import java.util.concurrent.TimeUnit;
 public class MultiClient {
 
     private boolean isDrawer = true;
-    private static String host = "localhost";
-    private static int portNumber = 8080;
+    private static String host = "pi.cs.oswego.edu";
+    private static int portNumber = 2715;
     private boolean isHost = true;
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<DrawData> drawPoints = new ArrayList<DrawData>();
 
     private String currentWord;
 
-    private static String gameStatus;
+    private String gameName;
+
+    private boolean sentGameName = false;
+
+    private boolean sendClear = true;
+
+    private boolean sentStart = false;
+
+    private static String gameStatus = "WAITING";
     private static String username;
+
+    private boolean canClear = false;
 
     protected static final String WAITING = "WAITING";
     protected static final String STARTED = "STARTED";
@@ -31,6 +41,8 @@ public class MultiClient {
 
     private int points;
 
+    private int currentTime;
+
     private static GUIMainMenu m = new GUIMainMenu();
 
     private static GUI g;
@@ -40,6 +52,29 @@ public class MultiClient {
         this.isHost = b;
     }
 
+    public void setSendClear(boolean sendClear) {
+        this.sendClear = sendClear;
+    }
+
+    public boolean isSendClear() {
+        return sendClear;
+    }
+
+    public void setSentGameName(boolean sentGameName) {
+        this.sentGameName = sentGameName;
+    }
+
+    public boolean hasSentGameName() {
+        return sentGameName;
+    }
+
+    public void setSentStart(boolean started) {
+        sentStart = started;
+    }
+
+    public boolean getSentStart() {
+        return sentStart;
+    }
 
     public void setGameStatus(String status) {
         if (status.equals("START")) {
@@ -48,6 +83,10 @@ public class MultiClient {
         } else if (status.equals("END")) {
             gameStatus = MultiClient.WAITING;
         }
+    }
+
+    public String getGameStatus() {
+        return gameStatus;
     }
 
 
@@ -63,7 +102,13 @@ public class MultiClient {
     public void setCurrentWord(String s) { currentWord = s; }
 
 
+    public int getCurrentTime() {
+        return currentTime;
+    }
 
+    public void clearCanvas() {
+        this.canClear = true;
+    }
 
 
     public void addMessage(String message){
@@ -107,6 +152,14 @@ public class MultiClient {
         return currentWord;
     }
 
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
+    }
+
+
+    public String getGameName() {
+        return gameName;
+    }
 
     public synchronized static void main(String[] args) {
 
@@ -116,13 +169,19 @@ public class MultiClient {
         while(true) {
         	m.bePretty();
             if(m.hasGame()) {
-                if(m.host || gameStatus.equals(MultiClient.STARTED)) {
+                if(m.host || gameStatus.equals(MultiClient.WAITING)) {
                 	username = m.uName;
-                    g = m.makeGUI(m.uName, client.getCurrentWord(), m.host);
+                    g = m.makeGUI(m.uName, client.getCurrentWord(), m.host, client);
                     try  {
                         Socket s = new Socket(host, portNumber);
                         new ClientInput(s,client).start();
                         new ClientOutput(s,client).start();
+                        g.updateTimer(client.getCurrentTime());
+
+                        if (client.canClear) {
+                            g.clearCanvas();
+                            client.canClear = false;
+                        }
 
                     } catch (IOException e) {
                         System.out.println("Hitting the IOException in the MC main method");
@@ -228,6 +287,8 @@ public class MultiClient {
 
         }
 
+        //synching the clocks
+
         if (data.getHost() != null) {
 
             if (this.getUsername().equalsIgnoreCase(data.getHost())) {
@@ -238,6 +299,8 @@ public class MultiClient {
 
         //this updates the point value if it is different than the normal
         updatePoints(data.getPoints());
+
+        this.currentTime = data.getTimeRemaining();
     }
 
     public boolean getDrawer() { return isDrawer;    }

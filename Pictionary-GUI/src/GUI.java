@@ -40,6 +40,7 @@ public class GUI implements Runnable, WindowListener{
     private boolean playing = false;
     private JButton startButton;
     private JLabel waitingToPlay;
+    private MultiClient client;
     
     protected boolean alive = true;
     
@@ -54,12 +55,13 @@ public class GUI implements Runnable, WindowListener{
 
     /**
      * Classic constructor.
-     * @param u the username
+     * @param user the username
      * @param tooltips determines whether or not the color tooltips will be displayed
      */
-    public GUI(String user, boolean tooltips, boolean painter, String wordString) {
+    public GUI(String user, boolean tooltips, boolean painter, String wordString, MultiClient client) {
     	username = user;
     	isPainter = painter;
+    	this.client = client;
     	if(wordString!=null)theWord = wordString;
     	word = new JLabel(theWord);
     	this.run();
@@ -112,6 +114,7 @@ public class GUI implements Runnable, WindowListener{
         
         startButton = new JButton("START!");
         startButton.addActionListener(actionEvent -> {
+            client.setGameStatus("START");
         	startButton.setVisible(false);
         	playing = true;
         });
@@ -299,7 +302,11 @@ public class GUI implements Runnable, WindowListener{
         	color = canvas.getBackground();
         	colorCode = GUI.ERASE;
         });
-        clearButton.addActionListener(actionEvent -> clearCanvas());
+        clearButton.addActionListener(actionEvent -> {
+
+            clearCanvas();
+            client.setSendClear(false);
+        });
         
         JScrollBar slize = new JScrollBar();
         slize.setPreferredSize(new Dimension(225, 25));
