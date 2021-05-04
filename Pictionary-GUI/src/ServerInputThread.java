@@ -37,12 +37,13 @@ public class ServerInputThread extends Thread {
                 } else {
                     //not drawer
                     try {
-                        System.out.println("Got message");
+//                        System.out.println("Got message");
                         Object o = in.readObject();
-                        System.out.println(o);
+//                        System.out.println(o);
                         //wait for the client to send a string then reading that string
                         if (o instanceof String) {
                             System.out.println("It was a String");
+                            System.out.println(o);
                             String chatMessage = (String) o;
                             if (chatMessage != null) {
                                 server.sendMessage(this.client, chatMessage);
@@ -56,10 +57,10 @@ public class ServerInputThread extends Thread {
                         System.out.println("EOF Exception");
                     }
                 }
-//                TimeUnit.MILLISECONDS.sleep(1000);
+                TimeUnit.MILLISECONDS.sleep(1000);
             }
 
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 

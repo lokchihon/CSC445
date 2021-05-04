@@ -23,7 +23,7 @@ public class ServerOutputThread extends Thread {
                 try {
                     //data packet
 //                    System.out.println("Getting things to send!");
-                    DataPacket data = server.getData(client);
+//                    DataPacket data = server.getData(client);
 //                    out.writeObject(data);
 //                    out.flush();
 //                    System.out.println("Sent something");
