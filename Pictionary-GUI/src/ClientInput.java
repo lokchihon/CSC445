@@ -45,9 +45,9 @@ public class ClientInput extends Thread {
 
                     if (s.contains("SECRET_WORD")){
                         //System.out.println("The secret word is " + s.substring(11));
-                        client.setCurrentWord(s.substring(11));
+                        client.setCurrentWord(s.substring(12));
                         //For some reason putting it here works better
-                        client.setWord(s.substring(11));
+                        client.setWord(s.substring(12));
                     }
 
                     if (s.equals("INVALID_USERNAME")) {
@@ -62,17 +62,17 @@ public class ClientInput extends Thread {
                         client.setDrawer(true);
 
 
+                    } else if (s.equals("CLEAR")) {
+                        System.out.println("Canvas being cleared");
+                        client.clearCanvas();
                     }
 
                 }
 
-                //need to receive coordinate packets and color packets and guess packets
 
 
-                 //if (data.getMessages() != null) {
-                   // System.out.println("DRAW DATA: " +data.getDrawData());
                      client.readPacket(data);
-                 //}
+
 
 
                 }catch(ClassCastException ignored){} catch (ClassNotFoundException e) {

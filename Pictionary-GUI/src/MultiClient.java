@@ -29,7 +29,6 @@ public class MultiClient {
     private static String gameStatus = "WAITING";
     private static String username;
 
-    private boolean canClear = false;
 
     protected static final String WAITING = "WAITING";
     protected static final String STARTED = "STARTED";
@@ -123,7 +122,8 @@ public class MultiClient {
     }
 
     public void clearCanvas() {
-        this.canClear = true;
+
+       g.clearCanvas();
     }
 
     public void startGUI() {

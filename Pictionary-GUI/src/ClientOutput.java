@@ -36,11 +36,7 @@ public class ClientOutput extends Thread {
 
             System.out.println("Hello");
 
-            try {
-                TimeUnit.MILLISECONDS.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
 
             while (client.getClientRunning()) {
 
@@ -52,11 +48,7 @@ public class ClientOutput extends Thread {
                         outputStream.flush();
                         outputStream.reset();
                         client.setSentUsername(true);
-                        try {
-                            TimeUnit.MILLISECONDS.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+
                     }
 
 
@@ -73,6 +65,7 @@ public class ClientOutput extends Thread {
                         outputStream.flush();
                         outputStream.reset();
                         client.setSendClear(false);
+                        client.getDrawPoints().clear();
                     }
 
 
@@ -94,8 +87,7 @@ public class ClientOutput extends Thread {
                         //}
 
                     } else {
-                        //code for sending out the word packets
-                        TimeUnit.MILLISECONDS.sleep(100);
+
                         //Checks to make sure that the data is not empty before writing.
                         PriorityQueue<String> chats = client.getChatMessages();
                         System.out.println(chats.peek());
@@ -111,9 +103,9 @@ public class ClientOutput extends Thread {
                     if (client.getGameStatus().equals("STARTED")) {
 
 
-                       System.out.println("HOST " + client.isHost());
-                       System.out.println("GETSENTSTART " + client.getSentStart());
-                       System.out.println(client.getCurrentWord());
+                      // System.out.println("HOST " + client.isHost());
+                      // System.out.println("GETSENTSTART " + client.getSentStart());
+                      // System.out.println(client.getCurrentWord());
                         if (client.isHost() && !client.getSentStart()) {
 
 
@@ -128,11 +120,7 @@ public class ClientOutput extends Thread {
                             client.setSentStart(true);
 
 
-                            try {
-                                TimeUnit.MILLISECONDS.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+
                         }
 
 
@@ -142,9 +130,14 @@ public class ClientOutput extends Thread {
                     }
 
                     } catch(ConcurrentModificationException ignore){
-                    } catch(InterruptedException e){
-                        e.printStackTrace();
+
                     }
+
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 }
 
