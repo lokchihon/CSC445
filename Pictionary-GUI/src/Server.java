@@ -73,6 +73,9 @@ public class Server {
         drawer.setDrawer(true);
 
         String message;
+
+        sendToAll("SECRET_WORD "+ secretWord);
+
         for(Client c : clients){
             if(c != clients.get(0)){
                 c.addMessage("START");
@@ -86,15 +89,15 @@ public class Server {
                 //!!!!!send the drawer the secret word
                 message = "You are the drawer!";
                 c.addMessage(message);
-                message = "SECRET_WORD " + secretWord;
-                c.addMessage(message);
             }
+
         }
+
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-//                System.out.println("Round will end in " + timeRemaining-- + " seconds.");
-                timeRemaining--;
+                System.out.println("Round will end in " + timeRemaining-- + " seconds.");
+//                timeRemaining--;
                 if(timeRemaining <= 0){
                     endRound();
                 }
@@ -169,28 +172,31 @@ public class Server {
             newRound();
         }
         else if(roundStarted) {
-            if (message.toLowerCase().equals(secretWord.toLowerCase())) {
+//            System.out.println("round started being hit");
+            if (message.toLowerCase().contains(secretWord.toLowerCase())) {
+//                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 messageToSendOut = sender.getUsername() + " has guessed the secret word!";
                 //!!!!!!!!!!!!!need to calculate points based on countdown clock
                 calculatePoints(sender);
                 winners++;
-                if (winners == clients.size() - 1) {
+                if (winners == clients.size() - 1 && winners != 0) {
                     end = true;
                 }
-            }
-            else if(message.toLowerCase().equals("CLEAR") && drawer==sender){
+            } else if(message.toLowerCase().equals("CLEAR") && drawer==sender){
                 messageToSendOut = "CLEAR";
+            }else {
+                messageToSendOut = sender.getUsername() + ": " + message;
             }
-        }
-        else {
+
+        } else {
             messageToSendOut = sender.getUsername() + ": " + message;
         }
 
-
+//        System.out.println("MESSAGE TO SEND OUT: "+ messageToSendOut);
         if(messageToSendOut != null){
             for(Client client : clients){
-                if(!(client == drawer)){
-                    client.addMessage(message);
+                if(!(client == sender)){
+                    client.addMessage(messageToSendOut);
                 }
 
             }
@@ -226,8 +232,8 @@ public class Server {
 //        System.out.println(drawData);
 //        System.out.println("TIME REMAINING");
 //        System.out.println(timeRemaining);
-//        System.out.println("MESSAGES");
-//        System.out.println(client.getMessages());
+        System.out.println("MESSAGES");
+        System.out.println(client.getMessages());
 //        System.out.println("POINTS");
 //        System.out.println(client.getPoints());
 //        System.out.println("DRAWER");

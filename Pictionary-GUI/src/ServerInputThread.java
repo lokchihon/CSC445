@@ -32,7 +32,8 @@ public class ServerInputThread extends Thread {
 //                        DataPacket read = eh.decode(key, eread.getData());
 
                         DataPacket read = (DataPacket) in.readObject();
-                        System.out.println("Getting draw data: " + read.getDrawData());
+//                        System.out.println(read);
+//                        System.out.println("Getting draw data: " + read.getDrawData());
                         this.server.setDrawData(read.getDrawData());
 
                     } catch (ClassCastException ignored) {}
@@ -42,13 +43,13 @@ public class ServerInputThread extends Thread {
                 } else {
                     //not drawer
                     try {
-//                        System.out.println("Got message");
+                        System.out.println("Got message");
                         Object o = in.readObject();
-//                        System.out.println(o);
+                        System.out.println(o);
                         //wait for the client to send a string then reading that string
                         if (o instanceof String) {
-                            System.out.println("It was a String");
-                            System.out.println(o);
+//                            System.out.println("It was a String");
+//                            System.out.println(o);
                             String chatMessage = (String) o;
                             if (chatMessage != null) {
                                 server.sendMessage(this.client, chatMessage);
@@ -67,6 +68,17 @@ public class ServerInputThread extends Thread {
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+        }
+        finally{
+
+            try {
+                server.playerDisconnected(client);
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
         }
 
     }

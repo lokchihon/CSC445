@@ -20,12 +20,13 @@ public class ServerOutputThread extends Thread {
     }
 
     public void run(){
-//        try {
+        try {
             while (server.getServerRunning()) {
                 try {
                     //data packet
 //                    System.out.println("Getting things to send!");
                     DataPacket data = server.getData(client);
+//                    client.getMessages().clear();
 //                    EDataPacket edata = new EDataPacket(eh.encode(key,data));
                     out.writeObject(data);
                     out.flush();
@@ -38,7 +39,17 @@ public class ServerOutputThread extends Thread {
                     e.printStackTrace();
                 }
             }
-//        }
-//        catch (IOException e) {e.printStackTrace();}
+
+        } finally{
+
+            try {
+                server.playerDisconnected(client);
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
     }
 }
