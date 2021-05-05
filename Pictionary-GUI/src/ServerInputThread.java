@@ -31,10 +31,22 @@ public class ServerInputThread extends Thread {
 //                        EDataPacket eread = (EDataPacket) in.readObject();
 //                        DataPacket read = eh.decode(key, eread.getData());
 
-                        DataPacket read = (DataPacket) in.readObject();
-//                        System.out.println(read);
-//                        System.out.println("Getting draw data: " + read.getDrawData());
-                        this.server.setDrawData(read.getDrawData());
+                        Object read = in.readObject();
+
+                        if(read instanceof String){
+                            System.out.println("Got message");
+                            String message = (String) read;
+                            System.out.println(message);
+                            if(message.equals("CLEAR")){
+                                server.sendMessage(this.client, message);
+                            }
+                        }
+                        if(read instanceof DataPacket){
+                            DataPacket readdp = (DataPacket) read;
+                            this.server.setDrawData(readdp.getDrawData());
+                        }
+
+
 
                     } catch (ClassCastException ignored) {}
                     catch (ClassNotFoundException e) {

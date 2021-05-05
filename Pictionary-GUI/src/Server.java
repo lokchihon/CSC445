@@ -13,7 +13,7 @@ public class Server {
     private String secretWord;
     private ArrayList<String> wordPot = new ArrayList<>();
 
-    private int roundTime = 30;
+    private int roundTime = 90;
     private int timeRemaining = roundTime;
     private boolean serverRunning = true;
     private int winners = 0;
@@ -74,8 +74,6 @@ public class Server {
 
         String message;
 
-        sendToAll("SECRET_WORD "+ secretWord);
-
         for(Client c : clients){
             if(c != clients.get(0)){
                 c.addMessage("START");
@@ -92,6 +90,7 @@ public class Server {
             }
 
         }
+        sendToAll("SECRET_WORD "+ secretWord);
 
         timer.schedule(new TimerTask() {
             @Override
@@ -182,7 +181,9 @@ public class Server {
                 if (winners == clients.size() - 1 && winners != 0) {
                     end = true;
                 }
-            } else if(message.toLowerCase().equals("CLEAR") && drawer==sender){
+            } else if(message.contains("CLEAR")){
+                drawData.clear();
+//                System.out.println("CLEARED DRAW DATA");
                 messageToSendOut = "CLEAR";
             }else {
                 messageToSendOut = sender.getUsername() + ": " + message;
@@ -232,8 +233,8 @@ public class Server {
 //        System.out.println(drawData);
 //        System.out.println("TIME REMAINING");
 //        System.out.println(timeRemaining);
-        System.out.println("MESSAGES");
-        System.out.println(client.getMessages());
+//        System.out.println("MESSAGES");
+//        System.out.println(client.getMessages());
 //        System.out.println("POINTS");
 //        System.out.println(client.getPoints());
 //        System.out.println("DRAWER");
