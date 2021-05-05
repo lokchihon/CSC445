@@ -449,16 +449,23 @@ public class GUI implements Runnable, WindowListener{
 	 * As a consequence, this also determines if the drawing controls are visible.
 	 * @param canSee true if player is drawing, else false
 	 */
-	private void setIsDrawer(boolean canSee) {
-		
-		isPainter = canSee;
-		if(isPainter) startButton.setVisible(isPainter);
-		else waitingToPlay.setVisible(!isPainter);
+	public void setIsDrawer(boolean isPainter) {
+
+		startButton.setVisible(isPainter);
+		waitingToPlay.setVisible(!isPainter);
 		for(JComponent c : buttonPanelArray) {
 			c.setVisible(isPainter);
 		}
 		
 	}
+
+
+
+	public void backToWaiting() {
+	    startButton.setVisible(client.isHost());
+	    waitingToPlay.setVisible(!client.isHost());
+    }
+
 	
 	/**
 	 * This method turns on and off the tooltips for the color buttons.

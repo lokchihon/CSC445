@@ -57,6 +57,7 @@ public class ClientInput extends Thread {
                         client.startGUI();
                     }  else if (s.equals("END")) {
                     client.setGameStatus(s);
+
                  } else if (s.equals("You are the drawer!")) {
                         System.out.println("You are the drawer");
                         client.setDrawer(true);

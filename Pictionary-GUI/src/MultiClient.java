@@ -294,6 +294,8 @@ public class MultiClient {
                     g.addChat(g.getUsername(), messages.get(i));
                     if (messages.get(i).equals("END")) {
                         System.out.println("Got an end");
+                        isDrawer = false;
+                        g.backToWaiting();
                     }
                 }
 
@@ -330,11 +332,14 @@ public class MultiClient {
 
         this.currentTime = data.getTimeRemaining();
         g.updateTimer(data.getTimeRemaining());
+        //if (data.getTimeRemaining() == 0) {
 
 
         if (currentWord != null) {
             g.setWord(currentWord);
         }
+
+
     }
 
     public boolean getDrawer() { return isDrawer;    }
