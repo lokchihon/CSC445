@@ -306,7 +306,7 @@ public class GUI implements Runnable, WindowListener{
         clearButton.addActionListener(actionEvent -> {
 
             clearCanvas();
-            client.setSendClear(false);
+            client.setSendClear(true);
         });
         
         JScrollBar slize = new JScrollBar();
@@ -411,7 +411,9 @@ public class GUI implements Runnable, WindowListener{
         inputConstraints.gridheight = 1;
         input.setPreferredSize(new Dimension(300, 40));
         input.addActionListener(actionEvent -> {
-        	addChat(username, input.getText());
+            String s = input.getText();
+        	addChat(username, s);
+        	client.sendChat(s);
         	input.setText("");
         });
         chatPanel.add(input, inputConstraints);

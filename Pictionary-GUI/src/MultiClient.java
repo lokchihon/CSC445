@@ -1,6 +1,6 @@
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MultiClient {
@@ -12,13 +12,17 @@ public class MultiClient {
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<DrawData> drawPoints = new ArrayList<DrawData>();
 
+    private PriorityQueue<String> chatMessages = new PriorityQueue<>();
+
+    int messagesSize = 0;
+
     private String currentWord;
 
     private String gameName;
 
     private boolean sentGameName = false;
 
-    private boolean sendClear = true;
+    private boolean sendClear = false;
 
     private boolean sentStart = false;
 
@@ -46,6 +50,18 @@ public class MultiClient {
     private static GUIMainMenu m = new GUIMainMenu();
 
     private static GUI g;
+
+
+    public void sendChat(String chat) {
+
+        System.out.println(chat);
+
+        chatMessages.add(chat);
+    }
+
+    public PriorityQueue<String> getChatMessages() {
+        return chatMessages;
+    }
 
 
     public void setIsHost(Boolean b) {
@@ -182,12 +198,9 @@ public class MultiClient {
                         Socket s = new Socket(host, portNumber);
                         new ClientInput(s,client).start();
                         new ClientOutput(s,client).start();
-                        g.updateTimer(client.getCurrentTime());
+                        //g.updateTimer(client.getCurrentTime());
 
-                        if (client.canClear) {
-                            g.clearCanvas();
-                            client.canClear = false;
-                        }
+
 
                     } catch (IOException e) {
                         System.out.println("Hitting the IOException in the MC main method");
@@ -275,16 +288,18 @@ public class MultiClient {
             ArrayList<String> messages = data.getMessages();
 
 
-            for (String s : messages) {
-
-                if (s.contains(g.getUsername()) && s.contains("joined")) {
-
-                } else {
-
-                    g.addChat(g.getUsername(), s);
+            if (messages.size() != messagesSize) {
+                int sizeDiff = messages.size() - messagesSize;
+                for (int i = messagesSize; i < messages.size(); i++) {
+                    g.addChat(g.getUsername(), messages.get(i));
+                    if (messages.get(i).equals("END")) {
+                        System.out.println("Got an end");
+                    }
                 }
 
+                messagesSize = messages.size();
             }
+
 
         }
 
@@ -315,7 +330,11 @@ public class MultiClient {
 
         this.currentTime = data.getTimeRemaining();
         g.updateTimer(data.getTimeRemaining());
-        //g.setWord(currentWord);
+
+
+        if (currentWord != null) {
+            g.setWord(currentWord);
+        }
     }
 
     public boolean getDrawer() { return isDrawer;    }

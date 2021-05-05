@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 
 public class ClientInput extends Thread {
@@ -56,8 +57,6 @@ public class ClientInput extends Thread {
                         client.startGUI();
                     }  else if (s.equals("END")) {
                     client.setGameStatus(s);
-                    }  else if (s.equals("CLEAR")) {
-                        client.clearCanvas();
                  } else if (s.equals("You are the drawer!")) {
                         System.out.println("You are the drawer");
                         client.setDrawer(true);
@@ -71,12 +70,19 @@ public class ClientInput extends Thread {
 
 
                  //if (data.getMessages() != null) {
-                    System.out.println("DRAW DATA: " +data.getDrawData());
+                   // System.out.println("DRAW DATA: " +data.getDrawData());
                      client.readPacket(data);
                  //}
 
 
                 }catch(ClassCastException ignored){} catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1000);
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
