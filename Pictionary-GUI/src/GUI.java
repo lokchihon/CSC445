@@ -576,6 +576,7 @@ public class GUI implements Runnable, WindowListener{
 	public ArrayList<DrawData> getBrushStrokes() {
 		ArrayList<DrawData> sendIt = paintQueue;
 		paintQueue = new ArrayList<>();
+        System.out.println("This is the arrayList in the GUI" + sendIt);
 		return sendIt;
 	}
 

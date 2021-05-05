@@ -74,12 +74,17 @@ public class ClientOutput extends Thread {
                         client.setSendClear(true);
                     }
 
-                    System.out.println("GAME STATUS: " + client.getGameStatus());
+                   System.out.println("GAME STATUS: " + client.getGameStatus());
                     if (client.getGameStatus().equals("STARTED")) {
 
-                        System.out.println("HOST " + client.isHost());
-                        System.out.println("GETSENTSTART " + client.getSentStart());
-                        System.out.println(client.getCurrentWord());
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                       System.out.println("HOST " + client.isHost());
+                       System.out.println("GETSENTSTART " + client.getSentStart());
+                       System.out.println(client.getCurrentWord());
                         if (client.isHost() && !client.getSentStart()) {
 
 
@@ -106,25 +111,24 @@ public class ClientOutput extends Thread {
                             // System.out.println(client.getDrawPoints());
                             //Checks to make sure that the data is not empty before writing.
                             ArrayList<DrawData> draws = client.getDrawPoints();
-                            if (draws.size() > 0) {
+                            System.out.println("This is the drawer" + draws);
+                            //if (draws.size() > 0) {
                                 DataPacket data = new DataPacket(draws, 0, new ArrayList<String>(), 0, "H", "H");
-                                outputStream.writeUnshared(data);
+                                outputStream.writeObject(data);
                                 System.out.println("Sent the draw data");
                                 outputStream.flush();
                                 outputStream.reset();
 
 
-                            }
-                            outputStream.writeUnshared(client.getDrawPoints());
-                            outputStream.flush();
-                            outputStream.reset();
+                            //}
+
                         } else {
                             //code for sending out the word packets
                             TimeUnit.MILLISECONDS.sleep(100);
                             //Checks to make sure that the data is not empty before writing.
                             ArrayList<String> chats = client.getMessages();
                             if (chats.size() > 0) {
-                                outputStream.writeUnshared(chats);
+                                outputStream.writeObject(chats);
                                 outputStream.flush();
                                 outputStream.reset();
                             }

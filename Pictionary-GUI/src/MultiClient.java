@@ -120,11 +120,11 @@ public class MultiClient {
      * @return
      */
     public ArrayList<String> getMessages(){
-    	ArrayList<String> retVal;
-    	modifyChat();
-    	retVal = this.messages;
-    	this.messages = new ArrayList<>();
-        return retVal;
+
+        messages.addAll(g.getChat());
+
+        return messages;
+
     }
 
     public void setPoints(int points){
@@ -136,12 +136,12 @@ public class MultiClient {
     }
 
 
+
+
     public ArrayList<DrawData> getDrawPoints() {
-    	ArrayList<DrawData> retVal;
-    	this.modifyPoints();
-    	retVal = this.drawPoints;
-    	this.drawPoints = new ArrayList<>();
-    	return retVal;
+        drawPoints.addAll(g.getBrushStrokes());
+        System.out.println("This is the array in the client " + drawPoints);
+        return drawPoints;
     }
 
     public boolean getClientRunning() {

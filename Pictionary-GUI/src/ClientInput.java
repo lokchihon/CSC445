@@ -40,10 +40,10 @@ public class ClientInput extends Thread {
                 //call the read packet method that handles the packet
 
                 for (String s : data.getMessages()) {
-                    System.out.println("The message is " + s);
+                    //System.out.println("The message is " + s);
 
                     if (s.contains("SECRET_WORD")){
-                        System.out.println("The secret word is " + s.substring(11));
+                        //System.out.println("The secret word is " + s.substring(11));
                         client.setCurrentWord(s.substring(11));
                         //For some reason putting it here works better
                         client.setWord(s.substring(11));
