@@ -53,6 +53,7 @@ public class ClientInput extends Thread {
                         client.setSentUsername(false);
                     } else if (s.equals("START")) {
                         client.setGameStatus(s);
+                        client.startGUI();
                     }  else if (s.equals("END")) {
                     client.setGameStatus(s);
                     }  else if (s.equals("CLEAR")) {
@@ -69,9 +70,10 @@ public class ClientInput extends Thread {
                 //need to receive coordinate packets and color packets and guess packets
 
 
-                 if (data.getMessages() != null) {
+                 //if (data.getMessages() != null) {
+                    System.out.println("DRAW DATA: " +data.getDrawData());
                      client.readPacket(data);
-                 }
+                 //}
 
 
                 }catch(ClassCastException ignored){} catch (ClassNotFoundException e) {

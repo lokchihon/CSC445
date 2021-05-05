@@ -5,10 +5,10 @@ import java.util.concurrent.TimeUnit;
 
 public class MultiClient {
 
-    private boolean isDrawer = true;
+    private boolean isDrawer = false;
     private static String host = "pi.cs.oswego.edu";
     private static int portNumber = 2715;
-    private boolean isHost = true;
+    private boolean isHost = false;
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<DrawData> drawPoints = new ArrayList<DrawData>();
 
@@ -108,6 +108,12 @@ public class MultiClient {
 
     public void clearCanvas() {
         this.canClear = true;
+    }
+
+    public void startGUI() {
+        if (!this.isHost) {
+            g.startGame();
+        }
     }
 
 
@@ -269,16 +275,23 @@ public class MultiClient {
             ArrayList<String> messages = data.getMessages();
 
 
-
             for (String s : messages) {
-                g.addChat(g.getUsername(), s);
+
+                if (s.contains(g.getUsername()) && s.contains("joined")) {
+
+                } else {
+
+                    g.addChat(g.getUsername(), s);
+                }
+
             }
 
         }
 
 
 
-        if (!this.isDrawer && data.getDrawData() != null) {
+        if (!isDrawer && data.getDrawData() != null) {
+            System.out.println("Read the data " + data.getDrawData());
             ArrayList<DrawData> drawing_data = data.getDrawData();
             for (DrawData d : drawing_data) {
                 readDataToGui(d, g);
