@@ -307,13 +307,8 @@ public class GUIMainMenu extends JFrame {
 		menuFrame.repaint();
 		
 		bePretty();
-		
 	}
-	
-	/**
-	 * 
-	 * @return
-	 */
+
 	public GUI makeGUI(String username, String word, boolean hosting, MultiClient client) {
 		g = null;
 		client.setGameName(gameName);
@@ -322,19 +317,11 @@ public class GUIMainMenu extends JFrame {
 		gameName = "";
 		return g;
 	}
-	
-	/**
-	 * 
-	 * @return
-	 */
+
 	public boolean hasGUI() {
 		return g == null;
 	}
-	
-	/**
-	 * 
-	 * @return
-	 */
+
 	public GUI getGUI() {
 		return g;
 	}
@@ -355,10 +342,7 @@ public class GUIMainMenu extends JFrame {
 		uName = "";
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
+
 	public boolean hasGame() {
 		return !gameName.equals("") && !gameName.equals("(enter game name)");
 	}

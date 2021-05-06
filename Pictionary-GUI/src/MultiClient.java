@@ -117,13 +117,11 @@ public class MultiClient {
         g.clearCanvas();
     }
 
-    //!!!!!!!!!!!!!!!!!!
     public void startGUI() {
         if (!this.isHost) {
             g.startGame();
         }
     }
-
 
     public void addMessage(String message){
         messages.add(message);
@@ -292,6 +290,7 @@ public class MultiClient {
 
         //this updates the point value if it is different than the normal
         updatePoints(data.getPoints());
+        g.setPoints(data.getPoints());
 
         this.currentTime = data.getTimeRemaining();
         g.updateTimer(data.getTimeRemaining());

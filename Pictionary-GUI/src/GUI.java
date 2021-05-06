@@ -75,7 +75,7 @@ public class GUI implements Runnable, WindowListener{
      * This method runs the game panel. 
      */
 	@Override
-	public void run() {
+	public void run(){
 
 		ToolTipManager.sharedInstance().setInitialDelay(0);
 		ToolTipManager.sharedInstance().setDismissDelay(5000);
@@ -416,7 +416,7 @@ public class GUI implements Runnable, WindowListener{
         input.setPreferredSize(new Dimension(300, 40));
         input.addActionListener(actionEvent -> {
             String s = input.getText();
-        	addChat(username, s);
+//        	addChat(username, s);
         	client.sendChat(s);
         	input.setText("");
         });
@@ -522,10 +522,11 @@ public class GUI implements Runnable, WindowListener{
 		}
 		if(!playing || (uName.equals(username) && isPainter==false)) chatQueue.add(addChat);
 		
-		if(!playing || (!chatText.toLowerCase().contains(theWord.toLowerCase()) && isPainter==false)) chatLog.add(uName+": "+addChat);
+		if(!playing || (!chatText.toLowerCase().equals(theWord.toLowerCase()) &&
+                isPainter==false && !chatText.contains("SECRET_WORD"))) chatLog.add(addChat);
 		else {
 			if(uName.equals(username) && isPainter==false) timeGuessed = System.currentTimeMillis();
-			if(isPainter==false) chatLog.add(uName+" guessed the word!");
+			if(isPainter==false && !chatText.contains("SECRET_WORD")) chatLog.add(uName+" guessed the word!");
 			retVal =  true;
 		}
 		if(chatLog.size()>512) chatLog.remove(0);
@@ -676,10 +677,9 @@ public class GUI implements Runnable, WindowListener{
 	
 	/**
 	 * This increases the point value displayed to the player.
-	 * @param increase the value by which it increased
+	 * @param points
 	 */
-	public void addToPoints(int increase) {
-		points += increase;
+	public void setPoints(int points) {
 		pointsLabel.setText("Points: "+points);
 	}
 	
