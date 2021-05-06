@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class MultiClient {
 
@@ -180,8 +181,15 @@ public class MultiClient {
                     g = m.makeGUI(m.uName, client.getCurrentWord(), m.host, client);
                     try  {
                         Socket s = new Socket(host, portNumber);
-                        new ClientInput(s,client).start();
                         new ClientOutput(s,client).start();
+                        try{
+                            TimeUnit.MILLISECONDS.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        new ClientInput(s,client).start();
+
 
                     } catch (IOException e) {
                         System.out.println("Hitting the IOException in the MC main method");

@@ -11,11 +11,12 @@ public class ClientOutput extends Thread {
     //we need a client to read the info and a stream to receive the info from
     private MultiClient client;
     private ObjectOutputStream outputStream;
-
+    private EncryptionHandler eh = new EncryptionHandler();
+    private String key;
 
     // get the stream from a socket that is given to the constructor
     public ClientOutput(Socket s, MultiClient client) {
-
+        key = client.getGameName();
         try {
             this.outputStream = new ObjectOutputStream(s.getOutputStream());
             System.out.println("made the output thread");
@@ -72,7 +73,8 @@ public class ClientOutput extends Thread {
                     if (client.getDrawer()) {
                         //Checks to make sure that the data is not empty before writing.
                         ArrayList<DrawData> draws = client.getDrawPoints();
-                        DataPacket data = new DataPacket(draws, 0, new ArrayList<String>(), 0, "H", "H");
+                        DataPacket ddata = new DataPacket(draws, 0, new ArrayList<String>(), 0, "H", "H");
+                        EDataPacket data = new EDataPacket(eh.encode(key,ddata));
                         outputStream.writeObject(data);
                         outputStream.flush();
                         outputStream.reset();

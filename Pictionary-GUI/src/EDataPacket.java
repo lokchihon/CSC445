@@ -1,4 +1,6 @@
-public class EDataPacket {
+import java.io.Serializable;
+
+public class EDataPacket implements Serializable {
 
     private byte[] data;
 

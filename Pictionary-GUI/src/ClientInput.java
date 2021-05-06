@@ -10,8 +10,8 @@ public class ClientInput extends Thread {
    //we need a client to read the info and a stream to receive the info from
     private MultiClient client;
     private ObjectInputStream inputStream;
-
-
+    private EncryptionHandler eh = new EncryptionHandler();
+    private String key ;
 
     // get the stream from a socket that is given to the constructor
     public ClientInput(Socket s, MultiClient client) {
@@ -31,10 +31,12 @@ public class ClientInput extends Thread {
     public void run() {
         try {
             while (client.getClientRunning()) {
+                key = client.getGameName();
                 try {
 
+                    EDataPacket eread = (EDataPacket) inputStream.readObject();
                 //read in a data packet, as that is the only thing the client has to read in
-                DataPacket data = (DataPacket) inputStream.readObject();
+                DataPacket data = eh.decode(key, eread.getData());
                 //call the read packet method that handles the packet
 
                 client.readPacket(data);
