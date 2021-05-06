@@ -170,6 +170,7 @@ public class Server {
         boolean end =  false;
         if(message.contains("GAME_NAME")){
             gameName = message;
+
         }
         else if(!sender.hasUsername()){
             System.out.println("Setting username");
@@ -275,6 +276,14 @@ public class Server {
         Client newDrawer = clients.get(whoHasDrawn%clients.size());
         whoHasDrawn++;
         return newDrawer;
+    }
+
+    public String getGameName(){
+        return this.gameName;
+    }
+
+    public void setGameName(String gameName){
+        this.gameName = gameName;
     }
 
 }

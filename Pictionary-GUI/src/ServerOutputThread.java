@@ -9,8 +9,8 @@ public class ServerOutputThread extends Thread {
     private Client client;
     private Socket socket;
     private ObjectOutputStream out;
-    private EncryptionHandler eh;
-    private String key;
+    private EncryptionHandler eh = new EncryptionHandler();
+
 
     public ServerOutputThread(Server server, Client client, Socket socket) throws IOException {
         this.server = server;
@@ -24,14 +24,14 @@ public class ServerOutputThread extends Thread {
             while (server.getServerRunning()) {
                 try {
                     //data packet
-//                    System.out.println("Getting things to send!");
+                    System.out.println("Getting things to send!");
                     DataPacket data = server.getData(client);
 //                    client.getMessages().clear();
-//                    EDataPacket edata = new EDataPacket(eh.encode(key,data));
-                    out.writeObject(data);
+                    EDataPacket edata = new EDataPacket(eh.encode(server.getGameName(),data));
+                    out.writeObject(edata);
                     out.flush();
                     out.reset();
-//                    System.out.println("Sent something");
+                    System.out.println("Sent something");
                     TimeUnit.MILLISECONDS.sleep(1000);
 
                 }catch (ConcurrentModificationException | IOException ignore){}

@@ -10,7 +10,7 @@ public class ServerInputThread extends Thread {
     private Client client;
     private Socket socket;
     private ObjectInputStream in;
-    private EncryptionHandler eh;
+    private EncryptionHandler eh = new EncryptionHandler();
     private String key;
 
     public ServerInputThread(Server server, Client client, Socket socket) throws IOException {
@@ -28,8 +28,7 @@ public class ServerInputThread extends Thread {
                 if (client.getDrawer()) {
                     try {
 //                        System.out.println("Got draw data!");
-//                        EDataPacket eread = (EDataPacket) in.readObject();
-//                        DataPacket read = eh.decode(key, eread.getData());
+
 
                         Object read = in.readObject();
 
@@ -41,8 +40,10 @@ public class ServerInputThread extends Thread {
                                 server.sendMessage(this.client, message);
                             }
                         }
-                        if(read instanceof DataPacket){
-                            DataPacket readdp = (DataPacket) read;
+
+                        if(read instanceof EDataPacket){
+                            EDataPacket eread = (EDataPacket) read;
+                            DataPacket readdp = eh.decode(server.getGameName(), eread.getData());
                             this.server.setDrawData(readdp.getDrawData());
                         }
 
