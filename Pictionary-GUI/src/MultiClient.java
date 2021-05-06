@@ -250,23 +250,37 @@ public class MultiClient {
             this.isDrawer = false;
         }
 
+
         if (data.getMessages() != null) {
-
-            ArrayList<String> messages = data.getMessages();
-
-            if (messages.size() != messagesSize) {
-                for (int i = messagesSize; i < messages.size(); i++) {
-                    g.addChat(g.getUsername(), messages.get(i));
-                    if (messages.get(i).equals("END")) {
-                        g.stopGame();
-                    } else if(messages.get(i).equals("START")){
-                        g.startGame();
+            ArrayList<String> m = data.getMessages();
+            for (int i = messagesSize; i<m.size(); i++) {
+                String s = m.get(i);
+                if (m.size() != messagesSize){
+                    if (s.contains("SECRET_WORD")){
+                        setCurrentWord(s.substring(12));
+                        setWord(s.substring(12));
                     }
+                    if (s.equals("INVALID_USERNAME")) {
+                        setSentUsername(false);
+                    } else if (s.equals("START")) {
+                        setGameStatus(s);
+                        startGUI();
+                        g.clearCanvas();
+                    }  else if (s.equals("END")) {
+                        setGameStatus(s);
+                        setDrawer(false);
+                        g.stopGame();
+                        getDrawPoints().clear();
+                    } else if (s.equals("You are the drawer!")) {
+                        setDrawer(true);
+                    } else if (s.equals("CLEAR")){
+                        System.out.println("CLEAR");
+                        clearCanvas();
+                    }
+                    g.addChat(username, s);
                 }
-                messagesSize = messages.size();
             }
-
-
+            messagesSize = messages.size();
         }
 
         if (!isDrawer && data.getDrawData() != null) {

@@ -13,7 +13,6 @@ public class ClientOutput extends Thread {
     private ObjectOutputStream outputStream;
 
 
-
     // get the stream from a socket that is given to the constructor
     public ClientOutput(Socket s, MultiClient client) {
 
@@ -34,10 +33,6 @@ public class ClientOutput extends Thread {
 
         try {
 
-            System.out.println("Hello");
-
-
-
             while (client.getClientRunning()) {
 
                 try {
@@ -48,7 +43,11 @@ public class ClientOutput extends Thread {
                         outputStream.flush();
                         outputStream.reset();
                         client.setSentUsername(true);
-
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
 
 
@@ -60,6 +59,7 @@ public class ClientOutput extends Thread {
                     }
 
 
+//                    System.out.println("IS SEND CLEAR: " + client.isSendClear());
                     if (client.isSendClear()) {
                         outputStream.writeObject("CLEAR");
                         outputStream.flush();
@@ -69,17 +69,11 @@ public class ClientOutput extends Thread {
                     }
 
 
-
                     if (client.getDrawer()) {
-                        // System.out.println("Is drawer");
-                        // System.out.println(client.getDrawPoints());
                         //Checks to make sure that the data is not empty before writing.
                         ArrayList<DrawData> draws = client.getDrawPoints();
-                        System.out.println("This is the drawer" + draws);
-                        //if (draws.size() > 0) {
                         DataPacket data = new DataPacket(draws, 0, new ArrayList<String>(), 0, "H", "H");
                         outputStream.writeObject(data);
-                        System.out.println("Sent the draw data");
                         outputStream.flush();
                         outputStream.reset();
 
@@ -87,10 +81,10 @@ public class ClientOutput extends Thread {
                         //}
 
                     } else {
-
+                        //code for sending out the word packets
+                        TimeUnit.MILLISECONDS.sleep(100);
                         //Checks to make sure that the data is not empty before writing.
                         PriorityQueue<String> chats = client.getChatMessages();
-                        System.out.println(chats.peek());
                         if (chats.size() > 0) {
                             outputStream.writeObject(chats.poll());
                             outputStream.flush();
@@ -99,13 +93,12 @@ public class ClientOutput extends Thread {
                     }
 
 
-                   ///System.out.println("GAME STATUS: " + client.getGameStatus());
+                    ///System.out.println("GAME STATUS: " + client.getGameStatus());
                     if (client.getGameStatus().equals("STARTED")) {
 
-
-                      // System.out.println("HOST " + client.isHost());
-                      // System.out.println("GETSENTSTART " + client.getSentStart());
-                      // System.out.println(client.getCurrentWord());
+//                       System.out.println("HOST " + client.isHost());
+//                       System.out.println("GETSENTSTART " + client.getSentStart());
+//                        System.out.println(client.getCurrentWord());
                         if (client.isHost() && !client.getSentStart()) {
 
 
@@ -119,19 +112,14 @@ public class ClientOutput extends Thread {
                             outputStream.reset();
                             client.setSentStart(true);
 
-
-
                         }
 
-
-
-
-
                     }
 
-                    } catch(ConcurrentModificationException ignore){
-
-                    }
+                } catch (ConcurrentModificationException ignore) {
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 try {
                     TimeUnit.MILLISECONDS.sleep(1000);
@@ -139,12 +127,12 @@ public class ClientOutput extends Thread {
                     e.printStackTrace();
                 }
 
-                }
-
-            } catch(IOException e ){
-                e.printStackTrace();
             }
 
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }

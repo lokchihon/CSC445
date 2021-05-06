@@ -118,6 +118,7 @@ public class GUI implements Runnable, WindowListener{
             client.setSentStart(false);
         	startButton.setVisible(false);
         	playing = true;
+        	clearCanvas();
 //        	startGame();
 
         });
@@ -497,14 +498,15 @@ public class GUI implements Runnable, WindowListener{
 	 * Clears the canvas and the paint queue.
 	 */
 	public void clearCanvas() {
-		Graphics g = canvas.getGraphics();
+        paintQueue = new ArrayList<>();
+        Graphics g = canvas.getGraphics();
 		try {
 			g.setColor(canvas.getBackground());
 			g.fillRect(0, 0, 1165, 850);
 		} catch(NullPointerException e) {
 			e.printStackTrace();
 		}
-		paintQueue = new ArrayList<>();
+
 	}
 	
 	/**
@@ -727,7 +729,6 @@ public class GUI implements Runnable, WindowListener{
 		JOptionPane.showMessageDialog(paintingWindow, "The game has ended.");
         backToWaiting();
         setWord("");
-        client.getDrawPoints().clear();
 	}
 	
 	/**

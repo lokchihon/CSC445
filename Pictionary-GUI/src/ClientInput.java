@@ -37,30 +37,6 @@ public class ClientInput extends Thread {
                 DataPacket data = (DataPacket) inputStream.readObject();
                 //call the read packet method that handles the packet
 
-                for (String s : data.getMessages()) {
-
-                    if (s.contains("SECRET_WORD")){
-                        client.setCurrentWord(s.substring(12));
-                        client.setWord(s.substring(12));
-                    }
-
-                    if (s.equals("INVALID_USERNAME")) {
-                        client.setSentUsername(false);
-                    } else if (s.equals("START")) {
-                        client.setGameStatus(s);
-                        client.startGUI();
-                    }  else if (s.equals("END")) {
-                        client.setGameStatus(s);
-                        client.setDrawer(false);
-                        client.getDrawPoints().clear();
-                    } else if (s.equals("You are the drawer!")) {
-//                        System.out.println("You are the drawer");
-                        client.setDrawer(true);
-                    } else if (s.equals("CLEAR")){
-                        client.clearCanvas();
-                    }
-
-                }
                 client.readPacket(data);
 
                 }catch(ClassCastException ignored){} catch (ClassNotFoundException e) {
