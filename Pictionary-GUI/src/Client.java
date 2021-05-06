@@ -40,8 +40,8 @@ public class Client extends Thread {
         return this.points;
     }
 
-    public void setPoints(int points){
-        this.points = points;
+    public void addPoints(int points){
+        this.points += points;
     }
 
 }

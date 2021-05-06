@@ -207,9 +207,8 @@ public class Server {
 //        System.out.println("MESSAGE TO SEND OUT: "+ messageToSendOut);
         if(messageToSendOut != null){
             for(Client client : clients){
-                if(!(client == sender)){
-                    client.addMessage(messageToSendOut);
-                }
+                client.addMessage(messageToSendOut);
+
 
             }
         }
@@ -246,12 +245,12 @@ public class Server {
 //        System.out.println(timeRemaining);
         System.out.println("MESSAGES");
         System.out.println(client.getMessages());
-//        System.out.println("POINTS");
-//        System.out.println(client.getPoints());
-//        System.out.println("DRAWER");
-//        System.out.println(drawer.getUsername());
-//        System.out.println("GAME HOST");
-//        System.out.println(gameHost.getUsername());
+        System.out.println("POINTS");
+        System.out.println(client.getPoints());
+        System.out.println("DRAWER");
+        System.out.println(drawer.getUsername());
+        System.out.println("GAME HOST");
+        System.out.println(gameHost.getUsername());
 
         return new DataPacket(drawData,
                 timeRemaining,
@@ -267,8 +266,9 @@ public class Server {
 
     public void calculatePoints(Client sender){
         int points = sender.getPoints();
-        sender.setPoints(points+timeRemaining);
-        System.out.println("POINTS: "+sender.getPoints());
+        sender.addPoints(points+timeRemaining);
+        drawer.addPoints(5);
+//        System.out.println("POINTS: "+sender.getPoints());
     }
 
     public Client chooseDrawer(){
