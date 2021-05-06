@@ -60,8 +60,6 @@ public class ServerInputThread extends Thread {
                         System.out.println(o);
                         //wait for the client to send a string then reading that string
                         if (o instanceof String) {
-//                            System.out.println("It was a String");
-//                            System.out.println(o);
                             String chatMessage = (String) o;
                             if (chatMessage != null) {
                                 server.sendMessage(this.client, chatMessage);
@@ -86,7 +84,7 @@ public class ServerInputThread extends Thread {
             try {
                 server.playerDisconnected(client);
                 socket.close();
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
 

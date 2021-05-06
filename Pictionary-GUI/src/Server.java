@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Server {
     private Client drawer = new Client();
@@ -13,7 +14,7 @@ public class Server {
     private String secretWord;
     private ArrayList<String> wordPot = new ArrayList<>();
 
-    private int roundTime = 90;
+    private int roundTime = 30;
     private int timeRemaining = roundTime;
     private boolean serverRunning = true;
     private int winners = 0;
@@ -97,27 +98,36 @@ public class Server {
             public void run() {
                 System.out.println("Round will end in " + timeRemaining-- + " seconds.");
 //                timeRemaining--;
-                if(timeRemaining <= 0){
-                    endRound();
+                if(timeRemaining < 0){
+                    try {
+                        endRound();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         },0,1000);
     }
 
-    public void endRound() {
+    public void endRound() throws InterruptedException {
         //stop timer
         timer.cancel();
         timer = new Timer();
 
+
         //remove artist role
         for(Client c : clients){
             c.setDrawer(false);
+            c.addMessage("END");
+
+            TimeUnit.MILLISECONDS.sleep(1000);
+            c.getMessages().clear();
         }
+        this.drawData.clear();
 
-        //!!!!!!!!!!send message saying round has ended
-        sendToAll("END");
-
+        drawer = new Client();
         roundStarted = false;
+        timeRemaining = 30;
         //!!!!! enter waiting room
     }
 
@@ -134,7 +144,7 @@ public class Server {
 
     }
 
-    public synchronized void playerDisconnected(Client client) throws IOException {
+    public synchronized void playerDisconnected(Client client) throws IOException, InterruptedException {
         clients.remove(client);
         if(clients.size() < 2) {
             endRound();
@@ -155,7 +165,7 @@ public class Server {
         this.serverSocket.close();
     }
 
-    public void sendMessage(Client sender, String message) throws IOException {
+    public void sendMessage(Client sender, String message) throws IOException, InterruptedException {
         String messageToSendOut = null;
         boolean end =  false;
         if(message.contains("GAME_NAME")){
@@ -176,6 +186,7 @@ public class Server {
 //                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 messageToSendOut = sender.getUsername() + " has guessed the secret word!";
                 //!!!!!!!!!!!!!need to calculate points based on countdown clock
+                System.out.println("CALCULATING POINTS");
                 calculatePoints(sender);
                 winners++;
                 if (winners == clients.size() - 1 && winners != 0) {
@@ -229,12 +240,12 @@ public class Server {
 
     public synchronized DataPacket getData(Client client){
 
-//        System.out.println("DRAW DATA");
-//        System.out.println(drawData);
+        System.out.println("DRAW DATA");
+        System.out.println(drawData);
 //        System.out.println("TIME REMAINING");
 //        System.out.println(timeRemaining);
-//        System.out.println("MESSAGES");
-//        System.out.println(client.getMessages());
+        System.out.println("MESSAGES");
+        System.out.println(client.getMessages());
 //        System.out.println("POINTS");
 //        System.out.println(client.getPoints());
 //        System.out.println("DRAWER");
@@ -257,6 +268,7 @@ public class Server {
     public void calculatePoints(Client sender){
         int points = sender.getPoints();
         sender.setPoints(points+timeRemaining);
+        System.out.println("POINTS: "+sender.getPoints());
     }
 
     public Client chooseDrawer(){

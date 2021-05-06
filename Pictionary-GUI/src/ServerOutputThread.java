@@ -45,7 +45,7 @@ public class ServerOutputThread extends Thread {
             try {
                 server.playerDisconnected(client);
                 socket.close();
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
 
