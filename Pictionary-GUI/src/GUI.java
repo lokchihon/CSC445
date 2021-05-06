@@ -70,7 +70,7 @@ public class GUI implements Runnable, WindowListener{
     	if(!isPainter && !playing) waitingToPlay.setVisible(true);
     	else waitingToPlay.setVisible(false);
     }
-    
+
     /**
      * This method runs the game panel. 
      */
@@ -115,8 +115,10 @@ public class GUI implements Runnable, WindowListener{
         startButton = new JButton("START!");
         startButton.addActionListener(actionEvent -> {
             client.setGameStatus("START");
+            client.setSentStart(false);
         	startButton.setVisible(false);
         	playing = true;
+//        	startGame();
 
         });
         startButton.setVisible(false);
@@ -131,7 +133,8 @@ public class GUI implements Runnable, WindowListener{
         GridBagConstraints waitingConstant = new GridBagConstraints();
         waitingConstant.ipady = 300;
         canvas.add(waitingToPlay);
-        
+
+
         //This is the section that listens to the mouse actions while moving. 
         canvas.addMouseMotionListener(new MouseMotionListener() {
             //This listener is for when the mouse is clicked and moving. 
@@ -304,9 +307,10 @@ public class GUI implements Runnable, WindowListener{
         	colorCode = GUI.ERASE;
         });
         clearButton.addActionListener(actionEvent -> {
-
             clearCanvas();
             client.setSendClear(true);
+//            System.out.println("SENT CLEAR");
+
         });
         
         JScrollBar slize = new JScrollBar();
@@ -431,7 +435,7 @@ public class GUI implements Runnable, WindowListener{
         chatPanel.setVisible(true);
         dataPanel.setVisible(true);
         buttonPanel.setVisible(true);
-        if(!isPainter) setIsDrawer(isPainter);
+        if(!isPainter) setIsDrawer(client.isHost(),isPainter);
         paintingWindow.add(dataPanel, BorderLayout.NORTH);
         paintingWindow.add(buttonPanel, BorderLayout.SOUTH);
         paintingWindow.add(chatPanel, BorderLayout.EAST);
@@ -447,25 +451,28 @@ public class GUI implements Runnable, WindowListener{
 	/**
 	 * This method tells the GUI if the user is the drawer or not.
 	 * As a consequence, this also determines if the drawing controls are visible.
-	 * @param canSee true if player is drawing, else false
+	 * @param isPainter true if player is drawing, else false
 	 */
-	public void setIsDrawer(boolean isPainter) {
-
-		startButton.setVisible(isPainter);
-		waitingToPlay.setVisible(!isPainter);
+	public void setIsDrawer(boolean host, boolean isPainter) {
+        startButton.setVisible(host);
+        waitingToPlay.setVisible(!host);
 		for(JComponent c : buttonPanelArray) {
 			c.setVisible(isPainter);
 		}
-		
 	}
 
+	public void backToWaiting(){
+	    clearCanvas();
+	    isPainter = false;
+	    setIsDrawer(client.isHost(), client.getDrawer());
+//        System.out.println("GETDRAWER: " + client.getDrawer());
+//        startButton.setVisible(client.isHost());
+//        waitingToPlay.setVisible(!client.isHost());
 
-
-	public void backToWaiting() {
-	    startButton.setVisible(client.isHost());
-	    waitingToPlay.setVisible(!client.isHost());
+//        for(JComponent c : buttonPanelArray) {
+//            c.setVisible(isPainter);
+//        }
     }
-
 	
 	/**
 	 * This method turns on and off the tooltips for the color buttons.
@@ -507,15 +514,6 @@ public class GUI implements Runnable, WindowListener{
 	 * @return true if the chat contained the word being guessed.
 	 */
 	public boolean addChat(String uName, String chatText) {
-
-		/*
-		 * This was supposed to censor the word, but prevented any correct guesses. 
-		if(chatText.toLowerCase().contains(theWord.toLowerCase())) {
-			String lastHalf = chatText.substring(chatText.toLowerCase().indexOf(theWord.toLowerCase())+theWord.length());
-			String firstHalf = chatText.substring(0, chatText.toLowerCase().indexOf(theWord.toLowerCase()));
-			chatText = firstHalf+"****"+lastHalf;
-		}
-		*/
 		boolean retVal = false;
 		String addChat = chatText;
 		if(chatText.length()+uName.length() > 32) {
@@ -585,7 +583,7 @@ public class GUI implements Runnable, WindowListener{
 	public ArrayList<DrawData> getBrushStrokes() {
 		ArrayList<DrawData> sendIt = paintQueue;
 		paintQueue = new ArrayList<>();
-        System.out.println("This is the arrayList in the GUI" + sendIt);
+//        System.out.println("This is the arrayList in the GUI" + sendIt);
 		return sendIt;
 	}
 
@@ -618,14 +616,14 @@ public class GUI implements Runnable, WindowListener{
 	 * @param theSuperSecretAwesomeKeyword
 	 */
 	public void giveWord(boolean painter, String theSuperSecretAwesomeKeyword) {
-		
-		setIsDrawer(painter);
-		playing = false;
-		try{
-			clearCanvas();
-		} catch(NullPointerException e) {
-			e.printStackTrace();
-		}
+//        System.out.println("BOOLEAN "+painter);
+		setIsDrawer(client.isHost(),painter);
+//		playing = false;
+//		try{
+//			clearCanvas();
+//		} catch(NullPointerException e) {
+//			e.printStackTrace();
+//		}
 		theWord = theSuperSecretAwesomeKeyword;
 		if(word==null) {
 			if(isPainter) word = new JLabel(theWord);
@@ -714,6 +712,8 @@ public class GUI implements Runnable, WindowListener{
 	 */
 	public void startGame() {
 		playing = true;
+		isPainter = client.getDrawer();
+		giveWord(isPainter,client.getCurrentWord());
 		waitingToPlay.setVisible(false);
 		startButton.setVisible(false);
 	}
@@ -725,6 +725,9 @@ public class GUI implements Runnable, WindowListener{
 	public void stopGame() {
 		playing = false;
 		JOptionPane.showMessageDialog(paintingWindow, "The game has ended.");
+        backToWaiting();
+        setWord("");
+        client.getDrawPoints().clear();
 	}
 	
 	/**

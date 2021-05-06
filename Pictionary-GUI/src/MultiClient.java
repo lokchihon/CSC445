@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class MultiClient {
 
@@ -14,9 +13,10 @@ public class MultiClient {
 
     private PriorityQueue<String> chatMessages = new PriorityQueue<>();
 
-    int messagesSize = 0;
+    private int messagesSize = 0;
+    private int drawingSize = 0;
 
-    private String currentWord;
+    private String currentWord="";
 
     private String gameName;
 
@@ -29,18 +29,12 @@ public class MultiClient {
     private static String gameStatus = "WAITING";
     private static String username;
 
-
     protected static final String WAITING = "WAITING";
     protected static final String STARTED = "STARTED";
-
 
     private boolean sentUsername = false;
 
     private boolean clientRunning = true;
-
-
-    int packetCounter = 0;
-
 
     private int points;
 
@@ -52,9 +46,7 @@ public class MultiClient {
 
 
     public void sendChat(String chat) {
-
-        System.out.println(chat);
-
+//        System.out.println(chat);
         chatMessages.add(chat);
     }
 
@@ -122,10 +114,10 @@ public class MultiClient {
     }
 
     public void clearCanvas() {
-
-       g.clearCanvas();
+        g.clearCanvas();
     }
 
+    //!!!!!!!!!!!!!!!!!!
     public void startGUI() {
         if (!this.isHost) {
             g.startGame();
@@ -144,7 +136,6 @@ public class MultiClient {
     public ArrayList<String> getMessages(){
 
         messages.addAll(g.getChat());
-
         return messages;
 
     }
@@ -157,12 +148,8 @@ public class MultiClient {
         return this.points;
     }
 
-
-
-
     public ArrayList<DrawData> getDrawPoints() {
         drawPoints.addAll(g.getBrushStrokes());
-        System.out.println("This is the array in the client " + drawPoints);
         return drawPoints;
     }
 
@@ -187,7 +174,6 @@ public class MultiClient {
 
         MultiClient client = new MultiClient();
 
-
         while(true) {
         	m.bePretty();
             if(m.hasGame()) {
@@ -198,9 +184,6 @@ public class MultiClient {
                         Socket s = new Socket(host, portNumber);
                         new ClientInput(s,client).start();
                         new ClientOutput(s,client).start();
-                        //g.updateTimer(client.getCurrentTime());
-
-
 
                     } catch (IOException e) {
                         System.out.println("Hitting the IOException in the MC main method");
@@ -209,16 +192,12 @@ public class MultiClient {
                 }
             }
             try {
-                Thread.sleep(10);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
-
-
-
-
 
     public String getUsername() {
         return username;
@@ -228,17 +207,12 @@ public class MultiClient {
         username = name;
     }
 
-
-
-
     //This will add the points from the gui to the array of points to be sent to the server
-
     public void modifyPoints() {
         for(DrawData d : g.getBrushStrokes()) {
             drawPoints.add(d);
         }
     }
-
 
     // This will add the points from the gui to the local messages
     public void modifyChat() {
@@ -247,11 +221,7 @@ public class MultiClient {
         }
     }
 
-
-
     //This gets the points from a single draw data and draws it on a GUI
-
-
     public void readDataToGui(DrawData drawData, GUI g) {
         int[] points = drawData.getPoints();
         int xPrev = points[0];
@@ -264,7 +234,6 @@ public class MultiClient {
     }
 
 
-
     //A method for updating the points based on what comes from the server
 
     public void updatePoints(int pointVal) {
@@ -274,46 +243,40 @@ public class MultiClient {
     }
 
 
-
     //The main method for reading from a packet and converting the data into useful variables
-
     public void readPacket(DataPacket data) {
         //this reads in a data packet and gets the values for the GUI
         if(username.equalsIgnoreCase(data.getDrawer())){
             this.isDrawer = true;
+        } else {
+            this.isDrawer = false;
         }
 
         if (data.getMessages() != null) {
 
             ArrayList<String> messages = data.getMessages();
 
-
             if (messages.size() != messagesSize) {
-                int sizeDiff = messages.size() - messagesSize;
                 for (int i = messagesSize; i < messages.size(); i++) {
                     g.addChat(g.getUsername(), messages.get(i));
                     if (messages.get(i).equals("END")) {
-                        System.out.println("Got an end");
-                        isDrawer = false;
-                        g.backToWaiting();
+                        g.stopGame();
+                    } else if(messages.get(i).equals("START")){
+                        g.startGame();
                     }
                 }
-
                 messagesSize = messages.size();
             }
 
 
         }
 
-
-
         if (!isDrawer && data.getDrawData() != null) {
-            System.out.println("Read the data " + data.getDrawData());
             ArrayList<DrawData> drawing_data = data.getDrawData();
-            for (DrawData d : drawing_data) {
+
+            for(DrawData d : drawing_data){
                 readDataToGui(d, g);
             }
-
 
         }
 
@@ -332,14 +295,10 @@ public class MultiClient {
 
         this.currentTime = data.getTimeRemaining();
         g.updateTimer(data.getTimeRemaining());
-        //if (data.getTimeRemaining() == 0) {
-
 
         if (currentWord != null) {
             g.setWord(currentWord);
         }
-
-
     }
 
     public boolean getDrawer() { return isDrawer;    }

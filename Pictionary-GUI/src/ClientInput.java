@@ -30,23 +30,17 @@ public class ClientInput extends Thread {
 
     public void run() {
         try {
-
-
             while (client.getClientRunning()) {
                 try {
 
-//                System.out.println("In the while loop");
                 //read in a data packet, as that is the only thing the client has to read in
                 DataPacket data = (DataPacket) inputStream.readObject();
                 //call the read packet method that handles the packet
 
                 for (String s : data.getMessages()) {
-                    //System.out.println("The message is " + s);
 
                     if (s.contains("SECRET_WORD")){
-                        //System.out.println("The secret word is " + s.substring(11));
                         client.setCurrentWord(s.substring(12));
-                        //For some reason putting it here works better
                         client.setWord(s.substring(12));
                     }
 
@@ -56,30 +50,22 @@ public class ClientInput extends Thread {
                         client.setGameStatus(s);
                         client.startGUI();
                     }  else if (s.equals("END")) {
-                    client.setGameStatus(s);
-
-                 } else if (s.equals("You are the drawer!")) {
-                        System.out.println("You are the drawer");
+                        client.setGameStatus(s);
+                        client.setDrawer(false);
+                        client.getDrawPoints().clear();
+                    } else if (s.equals("You are the drawer!")) {
+//                        System.out.println("You are the drawer");
                         client.setDrawer(true);
-
-
-                    } else if (s.equals("CLEAR")) {
-                        System.out.println("Canvas being cleared");
+                    } else if (s.equals("CLEAR")){
                         client.clearCanvas();
                     }
 
                 }
-
-
-
-                     client.readPacket(data);
-
-
+                client.readPacket(data);
 
                 }catch(ClassCastException ignored){} catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-
 
                 try {
                     TimeUnit.MILLISECONDS.sleep(1000);
@@ -87,12 +73,9 @@ public class ClientInput extends Thread {
                     e.printStackTrace();
                 }
 
-
             }
 
         } catch (IOException e) {
-
-            System.out.println("Why tf is it hitting here");
             e.printStackTrace();
         }
     }
