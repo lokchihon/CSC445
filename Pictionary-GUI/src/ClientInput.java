@@ -36,7 +36,8 @@ public class ClientInput extends Thread {
 
                     EDataPacket eread = (EDataPacket) inputStream.readObject();
                 //read in a data packet, as that is the only thing the client has to read in
-                DataPacket data = eh.decode(key, eread.getData());
+                   //I know this fix is really hacky, but... it works.
+                    DataPacket data = eh.decode("GAME_NAME "+key, eread.getData());
                 //call the read packet method that handles the packet
 
                 client.readPacket(data);
